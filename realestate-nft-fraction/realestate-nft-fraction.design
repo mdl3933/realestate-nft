@@ -1,0 +1,584 @@
+{
+  "data": [
+    {
+      "id": "page-index",
+      "title": "首页",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1759464218000,
+      "canvasData": {
+        "x": 0,
+        "y": 0,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-26cc555a",
+          "measuredAt": 1788525549261
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/index.html",
+        "interactions": [
+          {
+            "domId": "nav-marketplace",
+            "targetPageId": "page-marketplace",
+            "transitionLabel": "浏览资产"
+          },
+          {
+            "domId": "cta-explore-market",
+            "targetPageId": "page-marketplace",
+            "transitionLabel": "浏览资产"
+          },
+          {
+            "domId": "cta-split-property",
+            "targetPageId": "page-split",
+            "transitionLabel": "拆分房产"
+          },
+          {
+            "domId": "nav-split",
+            "targetPageId": "page-split",
+            "hideEdge": true,
+            "transitionLabel": "房产拆分"
+          },
+          {
+            "domId": "nav-trade",
+            "targetPageId": "page-trade",
+            "hideEdge": true,
+            "transitionLabel": "份额交易"
+          },
+          {
+            "domId": "nav-yield",
+            "targetPageId": "page-yield",
+            "hideEdge": true,
+            "transitionLabel": "收益领取"
+          },
+          {
+            "domId": "nav-redeem",
+            "targetPageId": "page-redeem",
+            "hideEdge": true,
+            "transitionLabel": "赎回合并"
+          },
+          {
+            "domId": "nav-profile",
+            "targetPageId": "page-profile",
+            "hideEdge": true,
+            "transitionLabel": "个人中心"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-marketplace",
+      "title": "在售资产",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1759464218000,
+      "canvasData": {
+        "x": 480,
+        "y": 0,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-e4236b1c",
+          "measuredAt": 1788525549261
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/marketplace.html",
+        "interactions": [
+          {
+            "domId": "market-buy-1",
+            "targetPageId": "page-trade",
+            "transitionLabel": "购买份额"
+          },
+          {
+            "domId": "market-buy-2",
+            "targetPageId": "page-trade",
+            "transitionLabel": "购买份额"
+          },
+          {
+            "domId": "market-buy-3",
+            "targetPageId": "page-trade",
+            "transitionLabel": "购买份额"
+          },
+          {
+            "domId": "market-buy-4",
+            "targetPageId": "page-trade",
+            "transitionLabel": "购买份额"
+          },
+          {
+            "domId": "nav-logo",
+            "targetPageId": "page-index",
+            "hideEdge": true,
+            "transitionLabel": "首页"
+          },
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true,
+            "transitionLabel": "首页"
+          },
+          {
+            "domId": "nav-split",
+            "targetPageId": "page-split",
+            "hideEdge": true,
+            "transitionLabel": "房产拆分"
+          },
+          {
+            "domId": "nav-trade",
+            "targetPageId": "page-trade",
+            "hideEdge": true,
+            "transitionLabel": "份额交易"
+          },
+          {
+            "domId": "nav-yield",
+            "targetPageId": "page-yield",
+            "hideEdge": true,
+            "transitionLabel": "收益领取"
+          },
+          {
+            "domId": "nav-redeem",
+            "targetPageId": "page-redeem",
+            "hideEdge": true,
+            "transitionLabel": "赎回合并"
+          },
+          {
+            "domId": "nav-profile",
+            "targetPageId": "page-profile",
+            "hideEdge": true,
+            "transitionLabel": "个人中心"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-split",
+      "title": "房产拆分",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1759464218000,
+      "canvasData": {
+        "x": 480,
+        "y": 373,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-17510473",
+          "measuredAt": 1788525549261
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/split.html",
+        "interactions": [
+          {
+            "domId": "nav-logo",
+            "targetPageId": "page-index",
+            "hideEdge": true,
+            "transitionLabel": "首页"
+          },
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true,
+            "transitionLabel": "首页"
+          },
+          {
+            "domId": "nav-marketplace",
+            "targetPageId": "page-marketplace",
+            "hideEdge": true,
+            "transitionLabel": "在售资产"
+          },
+          {
+            "domId": "nav-trade",
+            "targetPageId": "page-trade",
+            "hideEdge": true,
+            "transitionLabel": "份额交易"
+          },
+          {
+            "domId": "nav-yield",
+            "targetPageId": "page-yield",
+            "hideEdge": true,
+            "transitionLabel": "收益领取"
+          },
+          {
+            "domId": "nav-redeem",
+            "targetPageId": "page-redeem",
+            "hideEdge": true,
+            "transitionLabel": "赎回合并"
+          },
+          {
+            "domId": "nav-profile",
+            "targetPageId": "page-profile",
+            "hideEdge": true,
+            "transitionLabel": "个人中心"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-trade",
+      "title": "份额交易",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1759464218000,
+      "canvasData": {
+        "x": 960,
+        "y": 0,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-1c92bd70",
+          "measuredAt": 1788525549261
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/trade.html",
+        "interactions": [
+          {
+            "domId": "nav-yield",
+            "targetPageId": "page-yield",
+            "transitionLabel": "领取收益"
+          },
+          {
+            "domId": "nav-logo",
+            "targetPageId": "page-index",
+            "hideEdge": true,
+            "transitionLabel": "首页"
+          },
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true,
+            "transitionLabel": "首页"
+          },
+          {
+            "domId": "nav-marketplace",
+            "targetPageId": "page-marketplace",
+            "hideEdge": true,
+            "transitionLabel": "在售资产"
+          },
+          {
+            "domId": "nav-split",
+            "targetPageId": "page-split",
+            "hideEdge": true,
+            "transitionLabel": "房产拆分"
+          },
+          {
+            "domId": "nav-redeem",
+            "targetPageId": "page-redeem",
+            "hideEdge": true,
+            "transitionLabel": "赎回合并"
+          },
+          {
+            "domId": "nav-profile",
+            "targetPageId": "page-profile",
+            "hideEdge": true,
+            "transitionLabel": "个人中心"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-yield",
+      "title": "收益领取",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1759464218000,
+      "canvasData": {
+        "x": 1440,
+        "y": 0,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-593e8369",
+          "measuredAt": 1788525549261
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/yield.html",
+        "interactions": [
+          {
+            "domId": "nav-redeem",
+            "targetPageId": "page-redeem",
+            "transitionLabel": "赎回合并"
+          },
+          {
+            "domId": "nav-logo",
+            "targetPageId": "page-index",
+            "hideEdge": true,
+            "transitionLabel": "首页"
+          },
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true,
+            "transitionLabel": "首页"
+          },
+          {
+            "domId": "nav-marketplace",
+            "targetPageId": "page-marketplace",
+            "hideEdge": true,
+            "transitionLabel": "在售资产"
+          },
+          {
+            "domId": "nav-split",
+            "targetPageId": "page-split",
+            "hideEdge": true,
+            "transitionLabel": "房产拆分"
+          },
+          {
+            "domId": "nav-trade",
+            "targetPageId": "page-trade",
+            "hideEdge": true,
+            "transitionLabel": "份额交易"
+          },
+          {
+            "domId": "nav-profile",
+            "targetPageId": "page-profile",
+            "hideEdge": true,
+            "transitionLabel": "个人中心"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-redeem",
+      "title": "赎回合并",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1759464218000,
+      "canvasData": {
+        "x": 1920,
+        "y": 0,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-7ebaf04a",
+          "measuredAt": 1788525549261
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/redeem.html",
+        "interactions": [
+          {
+            "domId": "nav-profile",
+            "targetPageId": "page-profile",
+            "transitionLabel": "个人中心"
+          },
+          {
+            "domId": "nav-logo",
+            "targetPageId": "page-index",
+            "hideEdge": true,
+            "transitionLabel": "首页"
+          },
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true,
+            "transitionLabel": "首页"
+          },
+          {
+            "domId": "nav-marketplace",
+            "targetPageId": "page-marketplace",
+            "hideEdge": true,
+            "transitionLabel": "在售资产"
+          },
+          {
+            "domId": "nav-split",
+            "targetPageId": "page-split",
+            "hideEdge": true,
+            "transitionLabel": "房产拆分"
+          },
+          {
+            "domId": "nav-trade",
+            "targetPageId": "page-trade",
+            "hideEdge": true,
+            "transitionLabel": "份额交易"
+          },
+          {
+            "domId": "nav-yield",
+            "targetPageId": "page-yield",
+            "hideEdge": true,
+            "transitionLabel": "收益领取"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-profile",
+      "title": "个人中心",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1759464218000,
+      "canvasData": {
+        "x": 2400,
+        "y": 0,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-38135bf8",
+          "measuredAt": 1788525549261
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/profile.html",
+        "interactions": [
+          {
+            "domId": "nav-logo",
+            "targetPageId": "page-index",
+            "hideEdge": true,
+            "transitionLabel": "首页"
+          },
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true,
+            "transitionLabel": "首页"
+          },
+          {
+            "domId": "nav-marketplace",
+            "targetPageId": "page-marketplace",
+            "hideEdge": true,
+            "transitionLabel": "在售资产"
+          },
+          {
+            "domId": "nav-split",
+            "targetPageId": "page-split",
+            "hideEdge": true,
+            "transitionLabel": "房产拆分"
+          },
+          {
+            "domId": "nav-trade",
+            "targetPageId": "page-trade",
+            "hideEdge": true,
+            "transitionLabel": "份额交易"
+          },
+          {
+            "domId": "nav-yield",
+            "targetPageId": "page-yield",
+            "hideEdge": true,
+            "transitionLabel": "收益领取"
+          },
+          {
+            "domId": "nav-redeem",
+            "targetPageId": "page-redeem",
+            "hideEdge": true,
+            "transitionLabel": "赎回合并"
+          }
+        ]
+      }
+    },
+    {
+      "id": "image-001",
+      "title": "高端不动产主视觉",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1759464218000,
+      "canvasData": {
+        "x": 0,
+        "y": 746,
+        "naturalSize": {
+          "width": 2560,
+          "height": 1440
+        }
+      },
+      "devMetadata": {
+        "imageSrc": "assets/hero-real-estate.jpg"
+      }
+    },
+    {
+      "id": "image-002",
+      "title": "现代 Loft 公寓外景",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1759464218000,
+      "canvasData": {
+        "x": 480,
+        "y": 746,
+        "naturalSize": {
+          "width": 2240,
+          "height": 1680
+        }
+      },
+      "devMetadata": {
+        "imageSrc": "assets/property-loft.jpg"
+      }
+    },
+    {
+      "id": "image-003",
+      "title": "轻奢别墅建筑",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1759464218000,
+      "canvasData": {
+        "x": 960,
+        "y": 746,
+        "naturalSize": {
+          "width": 2240,
+          "height": 1680
+        }
+      },
+      "devMetadata": {
+        "imageSrc": "assets/property-villa.jpg"
+      }
+    },
+    {
+      "id": "image-004",
+      "title": "现代写字楼外观",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1759464218000,
+      "canvasData": {
+        "x": 1440,
+        "y": 746,
+        "naturalSize": {
+          "width": 2240,
+          "height": 1680
+        }
+      },
+      "devMetadata": {
+        "imageSrc": "assets/property-office.jpg"
+      }
+    },
+    {
+      "id": "image-005",
+      "title": "精装公寓室内",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1759464218000,
+      "canvasData": {
+        "x": 1920,
+        "y": 746,
+        "naturalSize": {
+          "width": 2240,
+          "height": 1680
+        }
+      },
+      "devMetadata": {
+        "imageSrc": "assets/property-apartment.jpg"
+      }
+    }
+  ],
+  "config": {
+    "autoLayout": true,
+    "deviceType": "desktop",
+    "projectName": "碎片化不动产 NFT 权益交易",
+    "designLibrary": null,
+    "visualEditorEnabled": false,
+    "showEdge": true
+  }
+}

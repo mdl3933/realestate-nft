@@ -1,0 +1,103 @@
+{
+  "success": true,
+  "outcome": "passed",
+  "repairable": true,
+  "terminalViolations": [],
+  "terminalBlockingSummary": null,
+  "skillProvenance": {
+    "name": "solo-design",
+    "version": "2026.07.22.00.00.00",
+    "version_source": "skill-release-manifest.json",
+    "runtime_skill_dir": "c:\\Users\\35117\\.trae-cn\\builtin\\design\\default\\skills\\solo-design",
+    "recorded_at": null,
+    "expected_version": "2026.07.22.00.00.00",
+    "status": "manifest_fallback",
+    "read_status": "ok",
+    "reason": "runtime-orchestration-summary.json missing skillProvenance; used skill-release-manifest.json"
+  },
+  "operatingMode": "free-explore",
+  "renderBlockingErrorCount": 0,
+  "softWarningCount": 0,
+  "renderBlockingErrors": [],
+  "errorSignatures": [],
+  "softWarnings": [],
+  "repairPlanHints": [],
+  "repairActionTable": [],
+  "errorCount": 0,
+  "warningCount": 0,
+  "errors": [],
+  "warnings": [],
+  "validationRunDisciplineStatus": {
+    "declared": false,
+    "restoreMode": false,
+    "maxFullValidationRuns": null,
+    "validationHistoryCount": 0,
+    "repairLedgerCount": 0,
+    "softWarningsTriggerRepair": null,
+    "terminalState": null,
+    "nextAction": null,
+    "violations": [],
+    "success": true
+  },
+  "terminalState": null,
+  "nextCheck": {
+    "type": "finish-readiness",
+    "command": "node \"c:\\Users\\35117\\.trae-cn\\builtin\\design\\default\\skills\\solo-design\\shared-runtime\\deterministic-tooling\\validate-finish-readiness.mjs\" \"C:\\Users\\35117\\AppData\\Roaming\\TRAE SOLO CN\\ModularData\\ai-agent\\work-mode-projects\\6a7016626341a8242792f045\\realestate-nft-fraction\" --check=all",
+    "fullValidationAllowed": false,
+    "reason": "workspace validation passed; run complete finish readiness before final delivery"
+  },
+  "repairBatch": [],
+  "repairContextPacket": {
+    "schema_version": "1.0",
+    "purpose": "small-context repair packet; read this before full validation-report.json",
+    "success": true,
+    "terminalState": null,
+    "skillProvenance": {
+      "name": "solo-design",
+      "version": "2026.07.22.00.00.00",
+      "version_source": "skill-release-manifest.json",
+      "runtime_skill_dir": "c:\\Users\\35117\\.trae-cn\\builtin\\design\\default\\skills\\solo-design",
+      "recorded_at": null,
+      "expected_version": "2026.07.22.00.00.00",
+      "status": "manifest_fallback",
+      "read_status": "ok",
+      "reason": "runtime-orchestration-summary.json missing skillProvenance; used skill-release-manifest.json"
+    },
+    "renderBlockingErrorCount": 0,
+    "softWarningCount": 0,
+    "renderBlockingErrors": [],
+    "repairActionTable": [],
+    "nextCheck": {
+      "type": "finish-readiness",
+      "command": "node \"c:\\Users\\35117\\.trae-cn\\builtin\\design\\default\\skills\\solo-design\\shared-runtime\\deterministic-tooling\\validate-finish-readiness.mjs\" \"C:\\Users\\35117\\AppData\\Roaming\\TRAE SOLO CN\\ModularData\\ai-agent\\work-mode-projects\\6a7016626341a8242792f045\\realestate-nft-fraction\" --check=all",
+      "fullValidationAllowed": false,
+      "reason": "workspace validation passed; run complete finish readiness before final delivery"
+    },
+    "forbidden": [
+      "do not read validator source",
+      "do not rerun full validation when nextCheck.fullValidationAllowed=false",
+      "do not start preview/browser unless user explicitly asks",
+      "do not hand-edit repair ledger fields"
+    ]
+  },
+  "projectFileHashes": {
+    "realestate-nft-fraction.design": "86dc2edf3eb752769c6f98cf3dd6ffc74d47f9d7d5f47e8aec2a3ddcab450ef3",
+    "colors_and_type.css": "ae1e56b6fae815f5464bd652ee60ca7d54e9ff788aad7d540eb1dff70a0cbd58",
+    "pages/index.html": "003d2e941881f45139da7f31229b348e66bdd855a77deb32df436302a53dab89",
+    "pages/marketplace.html": "47fb1fb04d99f7c40fde3b9127a341b555d4defce8de5e07a7176b2716a95f30",
+    "pages/profile.html": "cad46a1cc4455473c7bc22e22ec113d4e7f34918251e831b28689d137bae27c7",
+    "pages/redeem.html": "5e6acc86bd95804a3b319dafb1c93f3a5c90c3eb647602438ce81817f3f5def5",
+    "pages/split.html": "73c7ba13aed0ae04954a1258f066d18d6d9f2661eece885ba6221a3997013bee",
+    "pages/trade.html": "1717f107772f498f8754a408e0924fa961b045aecd4f051559673701eed24cfc",
+    "pages/yield.html": "d90e13d48dfce1c7fb5ec517633d403cfd4a0abdad8b8998aa4e09bd7f727aff",
+    "assets/hero-real-estate.jpg": "eebf7cf5d3912f520c63f7685d3cf2089b43b0b5c3278b028fd44f768d345c64",
+    "assets/property-apartment.jpg": "3a8f503c9e2fc2e69193fa3c8d4ed7b532bfd1e9978b0e128c58692303659c44",
+    "assets/property-loft.jpg": "99591d7afc2b45031d189eec3194d296d58dd790cbe84c11f9d076a3d1de787d",
+    "assets/property-office.jpg": "7691964da305fb00bf6f5995660519c1006f244c3f932e1e4438524ceb4f63f3",
+    "assets/property-villa.jpg": "5e7edf7bfc95d60c7571d8599e0b535399a1367dcf3f65ba0c514c474639c77b"
+  },
+  "designDir": "C:\\Users\\35117\\AppData\\Roaming\\TRAE SOLO CN\\ModularData\\ai-agent\\work-mode-projects\\6a7016626341a8242792f045\\realestate-nft-fraction",
+  "expectedPages": null,
+  "requireInteractions": null,
+  "checkedAt": "2026-08-10T04:05:27.284Z"
+}

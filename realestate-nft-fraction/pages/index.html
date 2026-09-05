@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESTATE — 碎片化不动产 NFT 权益交易</title>
+    <style id="theme-vars">
+/* EstateNFT Fraction — Premium real-estate luxury design tokens */
+
+:root {
+  /* Brand primary: warm bronze/gold single hue */
+  --estate-primary-50: #fbf7f1;
+  --estate-primary-100: #f5ecdf;
+  --estate-primary-200: #ebd6bc;
+  --estate-primary-300: #deb68a;
+  --estate-primary-400: #cc945d;
+  --estate-primary-500: #b8956b;
+  --estate-primary-600: #a6835a;
+  --estate-primary-700: #8a6b48;
+  --estate-primary-800: #6f553d;
+  --estate-primary-900: #5a4634;
+
+  /* Warm neutral scale */
+  --estate-neutral-0: #ffffff;
+  --estate-neutral-50: #faf8f5;
+  --estate-neutral-100: #f5f2ee;
+  --estate-neutral-150: #efeae4;
+  --estate-neutral-200: #e8e4df;
+  --estate-neutral-300: #d6d0c8;
+  --estate-neutral-400: #b0a99f;
+  --estate-neutral-500: #8a837a;
+  --estate-neutral-600: #6b6560;
+  --estate-neutral-700: #4f4b47;
+  --estate-neutral-800: #363330;
+  --estate-neutral-900: #1a1714;
+
+  /* Semantic surface tokens (secondary surfaces use neutral scale only) */
+  --estate-background: var(--estate-neutral-50);
+  --estate-foreground: var(--estate-neutral-900);
+  --estate-card: var(--estate-neutral-0);
+  --estate-card-foreground: var(--estate-neutral-900);
+  --estate-popover: var(--estate-neutral-0);
+  --estate-popover-foreground: var(--estate-neutral-900);
+  --estate-primary: var(--estate-primary-500);
+  --estate-primary-foreground: var(--estate-neutral-0);
+  --estate-muted: var(--estate-neutral-100);
+  --estate-muted-foreground: var(--estate-neutral-500);
+  --estate-border: var(--estate-neutral-200);
+  --estate-input: var(--estate-neutral-150);
+  --estate-ring: var(--estate-primary-500);
+
+  /* Semantic state colors — dual naming for compatibility */
+  --state-success: #2d6a4f;
+  --state-success-bg: #e8f5e9;
+  --state-warning: #b38600;
+  --state-warning-bg: #fff8e1;
+  --state-error: #a93e3e;
+  --state-error-bg: #ffebee;
+  --state-info: #4a6d8c;
+  --state-info-bg: #e3f2fd;
+  --estate-state-success: var(--state-success);
+  --estate-state-success-bg: var(--state-success-bg);
+  --estate-state-warning: var(--state-warning);
+  --estate-state-warning-bg: var(--state-warning-bg);
+  --estate-state-error: var(--state-error);
+  --estate-state-error-bg: var(--state-error-bg);
+  --estate-state-info: var(--state-info);
+  --estate-state-info-bg: var(--state-info-bg);
+
+  /* Radius */
+  --estate-radius-small: 4px;
+  --estate-radius-medium: 8px;
+  --estate-radius-large: 12px;
+  --estate-radius-xl: 16px;
+  --estate-radius-full: 9999px;
+
+  /* Shadows — static <= 0.05 alpha; floating layers may be deeper */
+  --estate-shadow-1: 0 1px 2px rgba(26, 23, 20, 0.04), 0 1px 1px rgba(26, 23, 20, 0.02);
+  --estate-shadow-2: 0 4px 12px rgba(26, 23, 20, 0.05);
+  --estate-shadow-3: 0 12px 40px -16px rgba(26, 23, 20, 0.05);
+
+  /* Spacing */
+  --estate-s-1: 4px;
+  --estate-s-2: 8px;
+  --estate-s-3: 12px;
+  --estate-s-4: 16px;
+  --estate-s-5: 24px;
+  --estate-s-6: 32px;
+  --estate-s-7: 48px;
+  --estate-s-8: 80px;
+
+  /* Typography */
+  --estate-font-sans: "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --estate-font-mono: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
+}
+
+/* Reset & base */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--estate-font-sans);
+  background-color: var(--estate-background);
+  color: var(--estate-foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+  background-color: var(--estate-background);
+  color: var(--estate-foreground);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Utility helpers */
+.font-mono {
+  font-family: var(--estate-font-mono);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== Layout primitives ===== */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--estate-s-5);
+  padding-right: var(--estate-s-5);
+}
+
+.page {
+  padding-top: var(--estate-s-7);
+  padding-bottom: var(--estate-s-8);
+}
+
+.section-title {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 0 0 var(--estate-s-3);
+}
+
+.section-subtitle {
+  color: var(--estate-muted-foreground);
+  margin: 0 0 var(--estate-s-6);
+  max-width: 640px;
+}
+
+/* ===== Navigation ===== */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: rgba(250, 248, 245, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--estate-border);
+}
+
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+  gap: var(--estate-s-4);
+}
+
+.logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--estate-primary-700);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--estate-s-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--estate-s-2) var(--estate-s-3);
+  border-radius: var(--estate-radius-medium);
+  color: var(--estate-neutral-700);
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-links a:hover,
+.nav-links a[aria-current="page"] {
+  background-color: var(--estate-primary-100);
+  color: var(--estate-primary-800);
+}
+
+.wallet-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--estate-s-2);
+  padding: var(--estate-s-2) var(--estate-s-4);
+  border: 1px solid var(--estate-primary-500);
+  border-radius: var(--estate-radius-full);
+  background-color: var(--estate-primary-500);
+  color: var(--estate-primary-foreground);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+}
+
+.wallet-btn:hover {
+  background-color: var(--estate-primary-600);
+  border-color: var(--estate-primary-600);
+}
+
+.wallet-btn:active {
+  transform: translateY(1px);
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  padding: var(--estate-s-2);
+  color: var(--estate-neutral-800);
+}
+
+/* ===== Footer ===== */
+.footer {
+  border-top: 1px solid var(--estate-border);
+  background-color: var(--estate-neutral-0);
+  padding-top: var(--estate-s-7);
+  padding-bottom: var(--estate-s-7);
+}
+
+.footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--estate-s-4);
+}
+
+.footer-links {
+  display: flex;
+  gap: var(--estate-s-5);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-links a {
+  color: var(--estate-muted-foreground);
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: var(--estate-primary-700);
+}
+
+.copyright {
+  color: var(--estate-muted-foreground);
+  font-size: 0.85rem;
+}
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--estate-s-2);
+  padding: var(--estate-s-3) var(--estate-s-5);
+  border-radius: var(--estate-radius-medium);
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+  border: 1px solid transparent;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background-color: var(--estate-primary-500);
+  color: var(--estate-primary-foreground);
+  border-color: var(--estate-primary-500);
+}
+
+.btn-primary:hover {
+  background-color: var(--estate-primary-600);
+  border-color: var(--estate-primary-600);
+}
+
+.btn-neutral {
+  background-color: var(--estate-neutral-100);
+  color: var(--estate-neutral-800);
+  border-color: var(--estate-neutral-200);
+}
+
+.btn-neutral:hover {
+  background-color: var(--estate-neutral-200);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--estate-primary-700);
+  border-color: var(--estate-primary-300);
+}
+
+.btn-outline:hover {
+  background-color: var(--estate-primary-50);
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--estate-neutral-700);
+  border-color: transparent;
+}
+
+.btn-ghost:hover {
+  background-color: var(--estate-neutral-100);
+}
+
+.btn-sm {
+  padding: var(--estate-s-2) var(--estate-s-3);
+  font-size: 0.85rem;
+}
+
+.btn-lg {
+  padding: var(--estate-s-3) var(--estate-s-6);
+  font-size: 1rem;
+}
+
+/* ===== Cards ===== */
+.card {
+  background-color: var(--estate-card);
+  border: 1px solid var(--estate-border);
+  border-radius: var(--estate-radius-large);
+  box-shadow: var(--estate-shadow-1);
+  overflow: hidden;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--estate-shadow-2);
+}
+
+.card-body {
+  padding: var(--estate-s-5);
+}
+
+.card-media {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background-color: var(--estate-neutral-200);
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 var(--estate-s-2);
+  color: var(--estate-neutral-900);
+}
+
+.card-meta {
+  color: var(--estate-muted-foreground);
+  font-size: 0.9rem;
+  margin: 0 0 var(--estate-s-4);
+}
+
+/* ===== Forms ===== */
+.form-group {
+  margin-bottom: var(--estate-s-4);
+}
+
+.form-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: var(--estate-s-2);
+  color: var(--estate-neutral-800);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: var(--estate-s-3) var(--estate-s-4);
+  border: 1px solid var(--estate-input);
+  border-radius: var(--estate-radius-medium);
+  background-color: var(--estate-neutral-0);
+  color: var(--estate-foreground);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--estate-ring);
+  box-shadow: 0 0 0 3px rgba(184, 149, 107, 0.15);
+}
+
+.form-hint {
+  font-size: 0.85rem;
+  color: var(--estate-muted-foreground);
+  margin-top: var(--estate-s-1);
+}
+
+/* ===== Grids ===== */
+.grid {
+  display: grid;
+  gap: var(--estate-s-5);
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 1024px) {
+  .grid-4 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 768px) {
+  .grid-2,
+  .grid-3,
+  .grid-4 { grid-template-columns: 1fr; }
+
+  .menu-toggle { display: inline-flex; }
+
+  .nav-links {
+    position: fixed;
+    inset: 68px 0 auto 0;
+    flex-direction: column;
+    align-items: stretch;
+    background-color: var(--estate-neutral-0);
+    border-bottom: 1px solid var(--estate-border);
+    padding: var(--estate-s-4);
+    gap: var(--estate-s-2);
+    box-shadow: var(--estate-shadow-3);
+    transform: translateY(-120%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+
+  .nav-links.is-open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .nav-links a {
+    padding: var(--estate-s-3) var(--estate-s-4);
+  }
+
+  .navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--estate-s-2);
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ===== Tables ===== */
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--estate-border);
+  border-radius: var(--estate-radius-large);
+  background-color: var(--estate-card);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.table th,
+.table td {
+  padding: var(--estate-s-3) var(--estate-s-4);
+  text-align: left;
+  border-bottom: 1px solid var(--estate-border);
+  white-space: nowrap;
+}
+
+.table th {
+  background-color: var(--estate-neutral-100);
+  font-weight: 600;
+  color: var(--estate-neutral-700);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background-color: var(--estate-neutral-50);
+}
+
+/* ===== Badges ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--estate-s-1) var(--estate-s-2);
+  border-radius: var(--estate-radius-full);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.badge-success {
+  background-color: var(--estate-state-success-bg);
+  color: var(--estate-state-success);
+}
+
+.badge-warning {
+  background-color: var(--estate-state-warning-bg);
+  color: var(--estate-state-warning);
+}
+
+.badge-info {
+  background-color: var(--estate-state-info-bg);
+  color: var(--estate-state-info);
+}
+
+/* ===== Misc ===== */
+.divider {
+  height: 1px;
+  background-color: var(--estate-border);
+  margin: var(--estate-s-5) 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--estate-s-7) var(--estate-s-5);
+  color: var(--estate-muted-foreground);
+}
+
+.text-muted {
+  color: var(--estate-muted-foreground);
+}
+
+.text-primary {
+  color: var(--estate-primary);
+}
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--estate-background);
+    --color-foreground: var(--estate-foreground);
+    --color-card: var(--estate-card);
+    --color-card-foreground: var(--estate-card-foreground);
+    --color-popover: var(--estate-popover);
+    --color-popover-foreground: var(--estate-popover-foreground);
+    --color-primary: var(--estate-primary);
+    --color-primary-foreground: var(--estate-primary-foreground);
+    --color-muted: var(--estate-muted);
+    --color-muted-foreground: var(--estate-muted-foreground);
+    --color-border: var(--estate-border);
+    --color-input: var(--estate-input);
+    --color-ring: var(--estate-ring);
+    --radius-xl: var(--estate-radius-xl);
+    --radius-sm: var(--estate-radius-small);
+    --radius-md: var(--estate-radius-medium);
+    --radius-lg: var(--estate-radius-large);
+  }
+  @layer base {
+    body { background: var(--estate-background); color: var(--estate-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--estate-background); }
+      .text-background { color: var(--estate-background); }
+      .border-background { border-color: var(--estate-background); }
+      .ring-background { --tw-ring-color: var(--estate-background); }
+      .bg-foreground { background-color: var(--estate-foreground); }
+      .text-foreground { color: var(--estate-foreground); }
+      .border-foreground { border-color: var(--estate-foreground); }
+      .ring-foreground { --tw-ring-color: var(--estate-foreground); }
+      .bg-card { background-color: var(--estate-card); }
+      .text-card { color: var(--estate-card); }
+      .border-card { border-color: var(--estate-card); }
+      .ring-card { --tw-ring-color: var(--estate-card); }
+      .bg-card-foreground { background-color: var(--estate-card-foreground); }
+      .text-card-foreground { color: var(--estate-card-foreground); }
+      .border-card-foreground { border-color: var(--estate-card-foreground); }
+      .ring-card-foreground { --tw-ring-color: var(--estate-card-foreground); }
+      .bg-popover { background-color: var(--estate-popover); }
+      .text-popover { color: var(--estate-popover); }
+      .border-popover { border-color: var(--estate-popover); }
+      .ring-popover { --tw-ring-color: var(--estate-popover); }
+      .bg-popover-foreground { background-color: var(--estate-popover-foreground); }
+      .text-popover-foreground { color: var(--estate-popover-foreground); }
+      .border-popover-foreground { border-color: var(--estate-popover-foreground); }
+      .ring-popover-foreground { --tw-ring-color: var(--estate-popover-foreground); }
+      .bg-primary { background-color: var(--estate-primary); }
+      .text-primary { color: var(--estate-primary); }
+      .border-primary { border-color: var(--estate-primary); }
+      .ring-primary { --tw-ring-color: var(--estate-primary); }
+      .bg-primary-foreground { background-color: var(--estate-primary-foreground); }
+      .text-primary-foreground { color: var(--estate-primary-foreground); }
+      .border-primary-foreground { border-color: var(--estate-primary-foreground); }
+      .ring-primary-foreground { --tw-ring-color: var(--estate-primary-foreground); }
+      .bg-muted { background-color: var(--estate-muted); }
+      .text-muted { color: var(--estate-muted); }
+      .border-muted { border-color: var(--estate-muted); }
+      .ring-muted { --tw-ring-color: var(--estate-muted); }
+      .bg-muted-foreground { background-color: var(--estate-muted-foreground); }
+      .text-muted-foreground { color: var(--estate-muted-foreground); }
+      .border-muted-foreground { border-color: var(--estate-muted-foreground); }
+      .ring-muted-foreground { --tw-ring-color: var(--estate-muted-foreground); }
+      .bg-border { background-color: var(--estate-border); }
+      .text-border { color: var(--estate-border); }
+      .border-border { border-color: var(--estate-border); }
+      .ring-border { --tw-ring-color: var(--estate-border); }
+      .bg-input { background-color: var(--estate-input); }
+      .text-input { color: var(--estate-input); }
+      .border-input { border-color: var(--estate-input); }
+      .ring-input { --tw-ring-color: var(--estate-input); }
+      .bg-ring { background-color: var(--estate-ring); }
+      .text-ring { color: var(--estate-ring); }
+      .border-ring { border-color: var(--estate-ring); }
+      .ring-ring { --tw-ring-color: var(--estate-ring); }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="./index.html" class="logo" data-dom-id="nav-logo">ESTATE</a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="./index.html" aria-current="page" data-dom-id="nav-home">首页</a></li>
+        <li><a href="./marketplace.html" data-dom-id="nav-marketplace">在售资产</a></li>
+        <li><a href="./split.html" data-dom-id="nav-split">房产拆分</a></li>
+        <li><a href="./trade.html" data-dom-id="nav-trade">份额交易</a></li>
+        <li><a href="./yield.html" data-dom-id="nav-yield">收益领取</a></li>
+        <li><a href="./redeem.html" data-dom-id="nav-redeem">赎回合并</a></li>
+        <li><a href="./profile.html" data-dom-id="nav-profile">个人中心</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <button class="wallet-btn" id="wallet-btn" type="button"><span>连接钱包</span></button>
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-label="打开菜单" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container hero-inner">
+      <h1>碎片化不动产 NFT 权益交易</h1>
+      <p>以区块链重新定义高端房产所有权。低门槛持有全球优质不动产份额，安全透明，随时交易。</p>
+      <div class="hero-actions">
+        <a href="./marketplace.html" class="btn btn-primary btn-lg" data-dom-id="cta-explore-market">浏览在售资产</a>
+        <a href="./split.html" class="btn btn-outline btn-lg" data-dom-id="cta-split-property">拆分我的房产</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="page">
+      <div class="container">
+        <h2 class="section-title">核心功能</h2>
+        <p class="section-subtitle">从钱包连接到收益领取，我们提供一站式的房产份额化投资体验。</p>
+        <div class="grid grid-4">
+          <article class="card">
+            <div class="card-body">
+              <div class="feature-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+              </div>
+              <h3 class="card-title">钱包连接</h3>
+              <p class="card-meta">一键连接 MetaMask 等 Web3 钱包，安全签署每笔交易。</p>
+              <button class="btn btn-primary btn-sm" id="feature-wallet">连接钱包</button>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-body">
+              <div class="feature-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+              </div>
+              <h3 class="card-title">房产拆分</h3>
+              <p class="card-meta">将实体房产铸造为主 NFT，并拆分为可流通的等额份额。</p>
+              <a href="./split.html" class="btn btn-outline btn-sm">立即拆分</a>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-body">
+              <div class="feature-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+              </div>
+              <h3 class="card-title">份额交易</h3>
+              <p class="card-meta">在去中心化市场中自由买卖房产份额，实时撮合价格。</p>
+              <a href="./trade.html" class="btn btn-outline btn-sm">去交易</a>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-body">
+              <div class="feature-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              </div>
+              <h3 class="card-title">收益领取</h3>
+              <p class="card-meta">租金收益按份额自动分配，一键领取至您的钱包。</p>
+              <a href="./yield.html" class="btn btn-outline btn-sm">领取收益</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section style="background-color: var(--estate-neutral-100); padding: var(--estate-s-8) 0;">
+      <div class="container">
+        <h2 class="section-title">精选房产</h2>
+        <p class="section-subtitle">探索平台严选的高端住宅与商业地产，开启低门槛不动产投资。</p>
+        <div class="grid grid-3 property-grid">
+          <article class="card">
+            <img class="card-media" src="../assets/property-villa.jpg" alt="轻奢别墅建筑">
+            <div class="card-body">
+              <h3 class="card-title">虹桥轻奢别墅</h3>
+              <p class="card-meta">上海 · 独栋别墅</p>
+              <div class="price-row">
+                <span class="price">¥18,000 / 份</span>
+                <span class="yield">年化 6.8%</span>
+              </div>
+              <div class="stat-row">
+                <span>总市值 ¥3,600 万</span>
+                <span>剩余 142 份</span>
+              </div>
+            </div>
+          </article>
+          <article class="card">
+            <img class="card-media" src="../assets/property-loft.jpg" alt="现代 Loft 公寓外景">
+            <div class="card-body">
+              <h3 class="card-title">静安 Loft 公寓</h3>
+              <p class="card-meta">上海 · Loft 公寓</p>
+              <div class="price-row">
+                <span class="price">¥4,200 / 份</span>
+                <span class="yield">年化 5.9%</span>
+              </div>
+              <div class="stat-row">
+                <span>总市值 ¥840 万</span>
+                <span>剩余 89 份</span>
+              </div>
+            </div>
+          </article>
+          <article class="card">
+            <img class="card-media" src="../assets/property-office.jpg" alt="现代写字楼外观">
+            <div class="card-body">
+              <h3 class="card-title">陆家嘴甲级写字楼</h3>
+              <p class="card-meta">上海 · 商业办公</p>
+              <div class="price-row">
+                <span class="price">¥12,500 / 份</span>
+                <span class="yield">年化 7.2%</span>
+              </div>
+              <div class="stat-row">
+                <span>总市值 ¥2.5 亿</span>
+                <span>剩余 312 份</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <ul class="footer-links">
+        <li><a href="./marketplace.html">在售资产</a></li>
+        <li><a href="./split.html">房产拆分</a></li>
+        <li><a href="./trade.html">份额交易</a></li>
+        <li><a href="./yield.html">收益领取</a></li>
+        <li><a href="./redeem.html">赎回合并</a></li>
+      </ul>
+      <p class="copyright">© 2026 ESTATE. 碎片化不动产 NFT 权益交易平台. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    (function() {
+      const menuToggle = document.getElementById('menu-toggle');
+      const navLinks = document.getElementById('nav-links');
+      menuToggle.addEventListener('click', () => {
+        const open = navLinks.classList.toggle('is-open');
+        menuToggle.setAttribute('aria-expanded', String(open));
+      });
+
+      const walletBtns = document.querySelectorAll('#wallet-btn, #feature-wallet');
+      walletBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const label = btn.querySelector('span') || btn;
+          if (label.textContent.includes('连接')) {
+            label.textContent = '0x71C…9A3e';
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-neutral');
+          } else {
+            label.textContent = '连接钱包';
+            btn.classList.add('btn-primary');
+            btn.classList.remove('btn-neutral');
+          }
+        });
+      });
+    })();
+  </script>
+
+    <style>
+    .hero {
+      position: relative;
+      min-height: 560px;
+      display: flex;
+      align-items: center;
+      background: linear-gradient(105deg, rgba(250,248,245,0.96) 0%, rgba(250,248,245,0.82) 55%, rgba(250,248,245,0.2) 100%), url('../assets/hero-real-estate.jpg') center / cover no-repeat;
+      border-bottom: 1px solid var(--estate-border);
+    }
+    .hero-inner { padding: var(--estate-s-8) 0; }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin: 0 0 var(--estate-s-4);
+      color: var(--estate-neutral-900);
+      max-width: 720px;
+    }
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--estate-muted-foreground);
+      margin: 0 0 var(--estate-s-6);
+      max-width: 560px;
+    }
+    .hero-actions { display: flex; gap: var(--estate-s-4); flex-wrap: wrap; }
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--estate-radius-medium);
+      background-color: var(--estate-primary-100);
+      color: var(--estate-primary-700);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--estate-s-3);
+    }
+    .feature-icon svg { width: 24px; height: 24px; }
+    .property-grid { margin-top: var(--estate-s-5); }
+    .price-row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--estate-s-3); margin-bottom: var(--estate-s-3); }
+    .price { font-size: 1.1rem; font-weight: 600; color: var(--estate-primary-700); }
+    .yield { font-size: 0.85rem; color: var(--estate-state-success); font-weight: 500; }
+    .stat-row { display: flex; gap: var(--estate-s-5); color: var(--estate-muted-foreground); font-size: 0.9rem; }
+  </style>
+</body>
+</html>
