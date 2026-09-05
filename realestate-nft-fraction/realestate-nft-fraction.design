@@ -9,14 +9,7 @@
       "canvasData": {
         "x": 0,
         "y": 0,
-        "group": 0,
-        "layoutSnapshot": {
-          "version": 1,
-          "contentHeight": 900,
-          "viewportWidth": 1440,
-          "sourceHash": "fnv1a-26cc555a",
-          "measuredAt": 1788525549261
-        }
+        "group": 0
       },
       "devMetadata": {
         "htmlSrc": "pages/index.html",
@@ -76,16 +69,9 @@
       "version": 1,
       "createdAt": 1759464218000,
       "canvasData": {
-        "x": 480,
+        "x": 620,
         "y": 0,
-        "group": 0,
-        "layoutSnapshot": {
-          "version": 1,
-          "contentHeight": 900,
-          "viewportWidth": 1440,
-          "sourceHash": "fnv1a-e4236b1c",
-          "measuredAt": 1788525549261
-        }
+        "group": 0
       },
       "devMetadata": {
         "htmlSrc": "pages/marketplace.html",
@@ -162,16 +148,9 @@
       "version": 1,
       "createdAt": 1759464218000,
       "canvasData": {
-        "x": 480,
-        "y": 373,
-        "group": 0,
-        "layoutSnapshot": {
-          "version": 1,
-          "contentHeight": 900,
-          "viewportWidth": 1440,
-          "sourceHash": "fnv1a-17510473",
-          "measuredAt": 1788525549261
-        }
+        "x": 620,
+        "y": 377,
+        "group": 0
       },
       "devMetadata": {
         "htmlSrc": "pages/split.html",
@@ -228,16 +207,9 @@
       "version": 1,
       "createdAt": 1759464218000,
       "canvasData": {
-        "x": 960,
+        "x": 1240,
         "y": 0,
-        "group": 0,
-        "layoutSnapshot": {
-          "version": 1,
-          "contentHeight": 900,
-          "viewportWidth": 1440,
-          "sourceHash": "fnv1a-1c92bd70",
-          "measuredAt": 1788525549261
-        }
+        "group": 0
       },
       "devMetadata": {
         "htmlSrc": "pages/trade.html",
@@ -293,16 +265,9 @@
       "version": 1,
       "createdAt": 1759464218000,
       "canvasData": {
-        "x": 1440,
+        "x": 1860,
         "y": 0,
-        "group": 0,
-        "layoutSnapshot": {
-          "version": 1,
-          "contentHeight": 900,
-          "viewportWidth": 1440,
-          "sourceHash": "fnv1a-593e8369",
-          "measuredAt": 1788525549261
-        }
+        "group": 0
       },
       "devMetadata": {
         "htmlSrc": "pages/yield.html",
@@ -358,16 +323,9 @@
       "version": 1,
       "createdAt": 1759464218000,
       "canvasData": {
-        "x": 1920,
+        "x": 2480,
         "y": 0,
-        "group": 0,
-        "layoutSnapshot": {
-          "version": 1,
-          "contentHeight": 900,
-          "viewportWidth": 1440,
-          "sourceHash": "fnv1a-7ebaf04a",
-          "measuredAt": 1788525549261
-        }
+        "group": 0
       },
       "devMetadata": {
         "htmlSrc": "pages/redeem.html",
@@ -423,16 +381,9 @@
       "version": 1,
       "createdAt": 1759464218000,
       "canvasData": {
-        "x": 2400,
+        "x": 3100,
         "y": 0,
-        "group": 0,
-        "layoutSnapshot": {
-          "version": 1,
-          "contentHeight": 900,
-          "viewportWidth": 1440,
-          "sourceHash": "fnv1a-38135bf8",
-          "measuredAt": 1788525549261
-        }
+        "group": 0
       },
       "devMetadata": {
         "htmlSrc": "pages/profile.html",
@@ -490,11 +441,7 @@
       "createdAt": 1759464218000,
       "canvasData": {
         "x": 0,
-        "y": 746,
-        "naturalSize": {
-          "width": 2560,
-          "height": 1440
-        }
+        "y": 754
       },
       "devMetadata": {
         "imageSrc": "assets/hero-real-estate.jpg"
@@ -507,12 +454,8 @@
       "version": 1,
       "createdAt": 1759464218000,
       "canvasData": {
-        "x": 480,
-        "y": 746,
-        "naturalSize": {
-          "width": 2240,
-          "height": 1680
-        }
+        "x": 620,
+        "y": 754
       },
       "devMetadata": {
         "imageSrc": "assets/property-loft.jpg"
@@ -525,12 +468,8 @@
       "version": 1,
       "createdAt": 1759464218000,
       "canvasData": {
-        "x": 960,
-        "y": 746,
-        "naturalSize": {
-          "width": 2240,
-          "height": 1680
-        }
+        "x": 1240,
+        "y": 754
       },
       "devMetadata": {
         "imageSrc": "assets/property-villa.jpg"
@@ -543,12 +482,8 @@
       "version": 1,
       "createdAt": 1759464218000,
       "canvasData": {
-        "x": 1440,
-        "y": 746,
-        "naturalSize": {
-          "width": 2240,
-          "height": 1680
-        }
+        "x": 1860,
+        "y": 754
       },
       "devMetadata": {
         "imageSrc": "assets/property-office.jpg"
@@ -561,12 +496,8 @@
       "version": 1,
       "createdAt": 1759464218000,
       "canvasData": {
-        "x": 1920,
-        "y": 746,
-        "naturalSize": {
-          "width": 2240,
-          "height": 1680
-        }
+        "x": 2480,
+        "y": 754
       },
       "devMetadata": {
         "imageSrc": "assets/property-apartment.jpg"

@@ -1,32 +1,29 @@
-# ===== 依赖目录 =====
+# 依赖
 node_modules/
 **/node_modules/
 
-# ===== 环境变量与密钥（严禁提交，含私钥/JWT 密钥）=====
+# 密钥与环境变量（严禁提交）
 .env
 **/.env
 .env.local
 *.env
 !*.env.example
 
-# ===== 数据库与运行时数据 =====
-*.sqlite
-*.sqlite-journal
-**/data/estate-db.json
-backend/data/
-
-# ===== Hardhat 编译缓存（artifacts 保留，后端需读取 ABI）=====
+# Hardhat 编译产物（可由 npx hardhat compile 重新生成）
 cache/
+artifacts/
 **/cache/
+**/artifacts/
 
-# ===== 日志与系统文件 =====
+# 设计/编辑器临时文件
+.preflight/
+**/.preflight/
+validation-report.json
+
+# 系统与日志
 *.log
 .DS_Store
 Thumbs.db
 
-# ===== 设计/编辑器临时文件 =====
-.preflight/
-**/.preflight/
-
-# ===== 其他临时目录 =====
+# 其他临时目录
 新建文件夹/
