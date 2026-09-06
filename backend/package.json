@@ -1,0 +1,16 @@
+{
+  "name": "realestate-backend",
+  "version": "1.0.0",
+  "description": "碎片化不动产 NFT 后端：托管钱包 + Hardhat 本地区块链（无需 MetaMask）",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.13.2",
+    "express": "^4.19.2"
+  }
+}

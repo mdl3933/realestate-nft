@@ -2,6 +2,7 @@
 pragma solidity ^0.8.26;
 
 import '@openzeppelin/contracts/token/ERC721/IERC721.sol';
+import '@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol';
 import '@openzeppelin/contracts/token/ERC1155/IERC1155.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/utils/ReentrancyGuard.sol';
@@ -23,7 +24,7 @@ interface IFractionToken {
  * @title EstateMarket
  * @dev 核心市场合约：拆分、买卖挂单、租金分发、赎回合并。
  */
-contract EstateMarket is Ownable, ReentrancyGuard {
+contract EstateMarket is Ownable, ReentrancyGuard, IERC721Receiver {
     IEstateNFT public estateNFT;
     IFractionToken public fractionToken;
 
@@ -81,6 +82,16 @@ contract EstateMarket is Ownable, ReentrancyGuard {
         require(_estateNFT != address(0) && _fractionToken != address(0), 'Market: zero address');
         estateNFT = IEstateNFT(_estateNFT);
         fractionToken = IFractionToken(_fractionToken);
+    }
+
+    // 接受 EstateNFT 在拆分时托管转入的 ERC721
+    function onERC721Received(
+        address,
+        address,
+        uint256,
+        bytes calldata
+    ) external pure override returns (bytes4) {
+        return IERC721Receiver.onERC721Received.selector;
     }
 
     // ==================== 拆分 ====================
