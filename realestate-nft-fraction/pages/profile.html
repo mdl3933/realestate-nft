@@ -749,25 +749,25 @@ input, select, textarea {
         <div class="card">
           <div class="card-body">
             <div class="label">持仓总市值</div>
-            <div class="value">¥1,548,000</div>
+            <div class="value" id="stat-value">¥1,548,000</div>
           </div>
         </div>
         <div class="card">
           <div class="card-body">
             <div class="label">持有份额总数</div>
-            <div class="value">200 份</div>
+            <div class="value" id="stat-shares">200 份</div>
           </div>
         </div>
         <div class="card">
           <div class="card-body">
             <div class="label">待领取收益</div>
-            <div class="value text-primary">¥4,286.00</div>
+            <div class="value text-primary" id="stat-pending">¥4,286.00</div>
           </div>
         </div>
         <div class="card">
           <div class="card-body">
             <div class="label">累计收益</div>
-            <div class="value">¥18,942.00</div>
+            <div class="value" id="stat-claimtotal">¥18,942.00</div>
           </div>
         </div>
       </div>
@@ -784,7 +784,7 @@ input, select, textarea {
               <th>可领取收益</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="tbody-holdings">
             <tr>
               <td>虹桥轻奢别墅</td>
               <td class="tabular">50</td>
@@ -817,7 +817,10 @@ input, select, textarea {
         </table>
       </div>
 
-      <h2 id="sec-orders" class="section-heading">交易历史</h2>
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <h2 id="sec-orders" class="section-heading" style="margin:0;">交易历史</h2>
+        <button type="button" class="btn btn-ghost" id="estate-export-csv" style="padding:8px 18px;font-size:.85rem;">导出交易记录 CSV</button>
+      </div>
       <div class="table-wrap" style="margin-bottom: var(--estate-s-6);">
         <table class="table">
           <thead>
@@ -830,7 +833,7 @@ input, select, textarea {
               <th>状态</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="tbody-orders">
             <tr>
               <td>2026-08-08 14:32</td>
               <td>买入</td>
@@ -859,7 +862,7 @@ input, select, textarea {
         </table>
       </div>
 
-      <h2 class="section-heading">分红历史</h2>
+      <h2 class="section-heading" id="sec-claims">分红历史</h2>
       <div class="table-wrap">
         <table class="table">
           <thead>
@@ -871,7 +874,7 @@ input, select, textarea {
               <th>我的分红</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="tbody-claims">
             <tr>
               <td>2026-08-01</td>
               <td>虹桥轻奢别墅</td>

@@ -382,77 +382,63 @@
     });
   }
 
-  // ---------- 个人中心渲染 ----------
+  // ---------- 个人中心：真实记录渲染（持仓 / 交易 / 分红 + 统计 + 导出）----------
   function renderProfile() {
-    var main = document.querySelector('main.page') || document.querySelector('main');
-    if (!main) return;
     var u = user();
     var orders = getOrders().filter(function (o) { return !u || o.owner === u.username; });
     var holdings = getHoldings();
     var claims = getClaims();
-    var highlighted = new URLSearchParams(location.search).get('order');
+    var highlighted = new URLSearchParams(location.search).get("order");
+    function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+    function priceOf(k, hh){ return (PROPERTIES[k] && PROPERTIES[k].price) || hh.avgPrice || 0; }
+    function emptyRow(n, msg){ return '<tr><td colspan="'+n+'" style="padding:26px;text-align:center;color:var(--estate-neutral-500,#9a9288)">'+msg+'</td></tr>'; }
+    function setText(id, txt){ var el=document.getElementById(id); if(el) el.textContent=txt; }
 
-    var sharesTotal = 0, valueTotal = 0;
-    Object.keys(holdings).forEach(function (k) { var h = holdings[k]; sharesTotal += h.shares; valueTotal += h.shares * (h.avgPrice || 0); });
-    var claimTotal = claims.reduce(function (s, c) { return s + Number(c.amount || 0); }, 0);
+    var wa = document.getElementById("wallet-address");
+    if (wa && u) wa.textContent = (u.chain ? "链上托管账户 " : "演示账户 ") + shortAddr(u.address) + " · " + u.username;
 
-    var typeMap = { buy: ['买入', '#7fbf8a'], sell: ['卖出', '#d98a6a'], split: ['拆分', '#c9a46a'], redeem: ['赎回', '#8aa6d9'], claim: ['分红', '#c9a46a'], subscribe: ['认购', '#7fbf8a'] };
-    var stMap = { filled: ['已成交', '#7fbf8a'], pending: ['链上确认中', '#d9c06a'], failed: ['失败', '#d96a6a'] };
+    var exportBtn = document.getElementById("estate-export-csv");
+    if (exportBtn) exportBtn.addEventListener("click", exportOrders);
 
-    var holdRows = Object.keys(holdings).filter(function (k) { return holdings[k].shares > 0; }).map(function (k) {
-      var h = holdings[k];
-      return '<tr style="border-top:1px solid rgba(201,164,106,.12)">' +
-        '<td style="padding:12px 16px;color:#ebd6bc">' + (h.name || propName(k)) + '</td>' +
-        '<td style="padding:12px 16px;text-align:right;color:#ebd6bc" class="tabular">' + h.shares + '</td>' +
-        '<td style="padding:12px 16px;text-align:right;color:#bfa98a" class="tabular">' + money(h.avgPrice) + '</td>' +
-        '<td style="padding:12px 16px;text-align:right;color:#c9a46a" class="tabular">' + money(h.shares * (h.avgPrice || 0)) + '</td></tr>';
-    }).join('');
+    var holdKeys = Object.keys(holdings).filter(function (k){ return holdings[k].shares > 0; });
+    var hasReal = orders.length > 0 || holdKeys.length > 0 || claims.length > 0;
+    if (!hasReal) return; // 无真实记录时保留页面演示数据
 
-    var orderRows = orders.map(function (o) {
-      var tn = (typeMap[o.type] || [o.type, '#c9a46a']);
-      var sn = (stMap[o.status] || [o.status, '#bfa98a']);
-      var hl = o.id === highlighted ? 'background:rgba(127,191,138,.12);' : '';
-      return '<tr style="border-top:1px solid rgba(201,164,106,.12);' + hl + '">' +
-        '<td style="padding:12px 16px;font-family:monospace;font-size:12px;color:#bfa98a">' + o.id + '</td>' +
-        '<td style="padding:12px 16px;color:' + tn[1] + ';font-weight:600">' + tn[0] + '</td>' +
-        '<td style="padding:12px 16px;color:#ebd6bc">' + o.propertyName + '</td>' +
-        '<td style="padding:12px 16px;text-align:right;color:#bfa98a" class="tabular">' + (o.price ? money(o.price) : '—') + '</td>' +
-        '<td style="padding:12px 16px;text-align:right;color:#ebd6bc" class="tabular">' + o.amount + '</td>' +
-        '<td style="padding:12px 16px;text-align:right;color:#c9a46a" class="tabular">' + (o.type === 'claim' ? '+' : '') + money(o.total) + '</td>' +
-        '<td style="padding:12px 16px;text-align:center;color:' + sn[1] + ';font-size:12px">' + sn[0] + '</td>' +
-        '<td style="padding:12px 16px;color:#9a8a72;font-size:12px;white-space:nowrap">' + fmtTime(o.createdAt) + '</td></tr>';
-    }).join('');
+    var sharesTotal = 0, valueTotal = 0, pendingTotal = 0;
+    holdKeys.forEach(function (k){
+      var hh = holdings[k], price = priceOf(k, hh);
+      sharesTotal += hh.shares; valueTotal += hh.shares * price;
+      pendingTotal += Math.round(hh.shares * price * 0.0027);
+    });
+    var claimTotal = claims.reduce(function (s,c){ return s + Number(c.amount || 0); }, 0);
+    setText("stat-value", money(valueTotal));
+    setText("stat-shares", sharesTotal + " 份");
+    setText("stat-pending", money(pendingTotal));
+    setText("stat-claimtotal", money(claimTotal));
 
-    var sec = document.createElement('section');
-    sec.className = 'container';
-    sec.id = 'estate-dash';
-    sec.style.cssText = 'margin-top:var(--estate-s-6,32px)';
-    sec.innerHTML =
-      '<div style="background:linear-gradient(160deg,rgba(201,164,106,.12),rgba(201,164,106,.03));border:1px solid rgba(201,164,106,.28);border-radius:16px;padding:22px;margin-bottom:24px">' +
-        '<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px">' +
-          '<div><div style="font-size:13px;color:#bfa98a">当前账户</div>' +
-          '<div style="font-size:20px;font-weight:700;color:#ebd6bc;margin-top:2px">' + (u ? u.username : '未登录（演示数据）') + '</div>' +
-          '<div style="font-size:12px;color:#9a8a72;margin-top:4px;font-family:monospace">' + (u ? ((u.chain ? '链上托管账户 ' : '演示账户 ') + shortAddr(u.address)) : '登录后订单将记录到你的账户') + '</div></div>' +
-          '<div style="display:flex;gap:24px;text-align:right">' +
-            '<div><div style="font-size:12px;color:#bfa98a">持仓份额</div><div style="font-size:22px;font-weight:700;color:#c9a46a">' + sharesTotal + '</div></div>' +
-            '<div><div style="font-size:12px;color:#bfa98a">持仓估值</div><div style="font-size:22px;font-weight:700;color:#c9a46a">' + money(valueTotal) + '</div></div>' +
-            '<div><div style="font-size:12px;color:#bfa98a">累计收益</div><div style="font-size:22px;font-weight:700;color:#c9a46a">' + money(claimTotal) + '</div></div>' +
-          '</div></div></div>' +
-      '<h2 class="section-title" style="font-size:22px">我的持仓</h2>' +
-      '<div style="overflow-x:auto;border:1px solid rgba(201,164,106,.2);border-radius:14px;margin-bottom:28px"><table style="width:100%;border-collapse:collapse;min-width:560px">' +
-        '<thead><tr style="background:rgba(201,164,106,.1);color:#c9a46a"><th style="padding:12px 16px;text-align:left;font-size:13px">房产</th><th style="padding:12px 16px;text-align:right;font-size:13px">持有份额</th><th style="padding:12px 16px;text-align:right;font-size:13px">持仓成本</th><th style="padding:12px 16px;text-align:right;font-size:13px">估值</th></tr></thead>' +
-        '<tbody>' + (holdRows || '<tr><td colspan="4" style="padding:24px;text-align:center;color:#9a8a72">暂无持仓，去 <a href="./trade.html" style="color:#c9a46a">份额交易</a> 买入吧</td></tr>') + '</tbody></table></div>' +
-      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:4px">' +
-        '<h2 class="section-title" style="font-size:22px;margin:0">我的订单' + (highlighted ? ' <span style="font-size:13px;color:#7fbf8a">（最新订单已记录）</span>' : '') + '</h2>' +
-        '<button id="estate-export-csv" type="button" style="background:transparent;border:1px solid rgba(201,164,106,.55);color:#c9a46a;padding:9px 18px;border-radius:10px;font-size:13px;cursor:pointer;white-space:nowrap">导出订单 CSV</button>' +
-      '</div>' +
-      '<div style="overflow-x:auto;border:1px solid rgba(201,164,106,.2);border-radius:14px"><table style="width:100%;border-collapse:collapse;min-width:680px">' +
-        '<thead><tr style="background:rgba(201,164,106,.1);color:#c9a46a"><th style="padding:12px 16px;text-align:left;font-size:13px">订单号</th><th style="padding:12px 16px;text-align:left;font-size:13px">类型</th><th style="padding:12px 16px;text-align:left;font-size:13px">房产</th><th style="padding:12px 16px;text-align:right;font-size:13px">单价</th><th style="padding:12px 16px;text-align:right;font-size:13px">数量</th><th style="padding:12px 16px;text-align:right;font-size:13px">总额</th><th style="padding:12px 16px;text-align:center;font-size:13px">状态</th><th style="padding:12px 16px;text-align:left;font-size:13px">时间</th></tr></thead>' +
-        '<tbody>' + (orderRows || '<tr><td colspan="8" style="padding:24px;text-align:center;color:#9a8a72">暂无订单记录</td></tr>') + '</tbody></table></div>' +
-      '<p style="margin-top:16px;font-size:12px;color:' + (u && u.chain ? '#7fbf8a' : '#9a8a72') + '">' + (u && u.chain ? '● 已连接本地区块链，订单由托管钱包签名上链。' : '● 当前为浏览器演示模式；在本地启动后端与 Hardhat 节点后，订单将真实上链。') + '</p>';
-    main.insertBefore(sec, main.firstChild);
-    var exportBtn = sec.querySelector('#estate-export-csv');
-    if (exportBtn) exportBtn.addEventListener('click', exportOrders);
+    var hb = document.getElementById("tbody-holdings");
+    if (hb) hb.innerHTML = holdKeys.map(function (k){
+      var hh = holdings[k], price = priceOf(k, hh), pend = Math.round(hh.shares * price * 0.0027);
+      return "<tr><td>"+esc(hh.name || propName(k))+"</td><td class=\"tabular\">"+hh.shares+"</td><td class=\"tabular\">"+money(price)+"</td><td class=\"tabular\">"+money(hh.shares*price)+"</td><td class=\"tabular\">"+money(pend)+"</td></tr>";
+    }).join("") || emptyRow(5, "暂无持仓，去 <a href=\"./trade.html\" style=\"color:var(--estate-primary)\">份额交易</a> 买入吧");
+
+    var ob = document.getElementById("tbody-orders");
+    if (ob) ob.innerHTML = orders.map(function (o){
+      var typeCn = TYPE_CN[o.type] || o.type;
+      var stCn = STATUS_CN[o.status] || o.status || "已成交";
+      var badge = o.status === "failed" ? "<span class=\"badge\" style=\"background:#fdeaea;color:#c0392b\">"+stCn+"</span>"
+        : (o.status === "pending" ? "<span class=\"badge badge-warning\">"+stCn+"</span>" : "<span class=\"badge badge-success\">"+stCn+"</span>");
+      var hl = o.id === highlighted ? " style=\"background:var(--estate-primary-50,#faf3e6)\"" : "";
+      return "<tr"+hl+"><td>"+fmtTime(o.createdAt)+"</td><td>"+esc(typeCn)+"</td><td>"+esc(o.propertyName||"—")+"</td><td class=\"tabular\">"+(o.amount||0)+" 份</td><td class=\"tabular\">"+(o.type==="claim"?"+":"")+money(o.total)+"</td><td>"+badge+"</td></tr>";
+    }).join("") || emptyRow(6, "暂无交易记录，完成一笔 <a href=\"./trade.html\" style=\"color:var(--estate-primary)\">买入</a> 后自动保存");
+
+    var cb = document.getElementById("tbody-claims");
+    if (cb) cb.innerHTML = claims.map(function (c){
+      var t = c.time || c.createdAt || Date.now();
+      var d = new Date(t);
+      var ym = d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0");
+      return "<tr><td>"+fmtTime(t)+"</td><td>"+esc(c.propertyName||"—")+"</td><td>"+ym+"</td><td class=\"tabular\">—</td><td class=\"tabular\">+"+money(c.amount)+"</td></tr>";
+    }).join("") || emptyRow(5, "暂无分红记录，前往 <a href=\"./yield.html\" style=\"color:var(--estate-primary)\">收益领取</a>");
   }
 
   // ---------- 启动 ----------
