@@ -690,6 +690,7 @@ input, select, textarea {
         background-color: currentColor;
       }
     </style>
+    <link rel="stylesheet" href="../assets/cover.css">
 </head>
 <body>
   <nav class="navbar">
@@ -713,10 +714,28 @@ input, select, textarea {
     </div>
   </nav>
 
+  <header class="page-hero" style="--hero-img:url('../assets/property-loft.jpg')">
+    <div class="ph-bg"></div>
+    <div class="ph-grid"></div>
+    <div class="ph-glow ph-glow-a"></div>
+    <div class="ph-glow ph-glow-b"></div>
+    <div class="container ph-inner">
+      <div class="ph-crumb"><a href="./index.html">首页</a><span class="sep">/</span><span>赎回合并</span></div>
+      <div class="ph-eyebrow"><span class="ph-dot"></span>Redemption · 赎回合并</div>
+      <h1 class="ph-title">集齐全部份额，<span class="gold-text">赎回房产</span></h1>
+      <p class="ph-sub">当你收齐一套房产的全部 1000 份份额，即可合并销毁份额、赎回完整 ERC-721 主 NFT，完成「拆分—流通—赎回」的资产闭环。</p>
+      <div class="ph-chips">
+        <span class="ph-chip"><i></i>集齐 1000 份</span>
+        <span class="ph-chip"><i></i>份额合并销毁</span>
+        <span class="ph-chip"><i></i>主 NFT 归还</span>
+        <span class="ph-chip"><i></i>完整资产闭环</span>
+      </div>
+    </div>
+    <div class="ph-ticker" aria-hidden="true"><div class="ph-ticker-track"><b>ERC-721 房产确权</b><i>✦</i><b>ERC-1155 份额流通</b><i>✦</i><b>Chainlink 预言机喂价</b><i>✦</i><b>USDC 稳定币结算</b><i>✦</i><b>DAO 份额治理</b><i>✦</i><b>IPFS 元数据存证</b><i>✦</i><b>免 MetaMask 托管签名</b><i>✦</i><b>Polygon 链上可查</b><i>✦</i><b>ERC-721 房产确权</b><i>✦</i><b>ERC-1155 份额流通</b><i>✦</i><b>Chainlink 预言机喂价</b><i>✦</i><b>USDC 稳定币结算</b><i>✦</i><b>DAO 份额治理</b><i>✦</i><b>IPFS 元数据存证</b><i>✦</i><b>免 MetaMask 托管签名</b><i>✦</i><b>Polygon 链上可查</b><i>✦</i></div></div>
+  </header>
+
   <main class="page">
     <div class="container">
-      <h1 class="section-title">赎回合并</h1>
-      <p class="section-subtitle">当您持有房产的足额份额后，可发起赎回合并，将份额兑换为完整的主 NFT 所有权。</p>
 
       <div class="redeem-layout">
         <form class="form-card" onsubmit="event.preventDefault();">

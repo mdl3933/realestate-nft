@@ -690,6 +690,7 @@ input, select, textarea {
         background-color: currentColor;
       }
     </style>
+    <link rel="stylesheet" href="../assets/cover.css">
 </head>
 <body>
   <nav class="navbar">
@@ -713,10 +714,28 @@ input, select, textarea {
     </div>
   </nav>
 
+  <header class="page-hero" style="--hero-img:url('../assets/hero-real-estate.jpg')">
+    <div class="ph-bg"></div>
+    <div class="ph-grid"></div>
+    <div class="ph-glow ph-glow-a"></div>
+    <div class="ph-glow ph-glow-b"></div>
+    <div class="container ph-inner">
+      <div class="ph-crumb"><a href="./index.html">首页</a><span class="sep">/</span><span>在售资产</span></div>
+      <div class="ph-eyebrow"><span class="ph-dot"></span>RWA · Marketplace</div>
+      <h1 class="ph-title">链上在售 <span class="gold-text">不动产</span></h1>
+      <p class="ph-sub">浏览已确权并碎片化的优质房产：Chainlink 实时喂价、USDC 法币本位结算，每一处资产 1:1 托管于智能合约，成交记录链上可查。</p>
+      <div class="ph-chips">
+        <span class="ph-chip"><i></i>4 处在售资产</span>
+        <span class="ph-chip"><i></i>每处 1000 标准份额</span>
+        <span class="ph-chip"><i></i>Chainlink 实时喂价</span>
+        <span class="ph-chip"><i></i>USDC 法币结算</span>
+      </div>
+    </div>
+    <div class="ph-ticker" aria-hidden="true"><div class="ph-ticker-track"><b>ERC-721 房产确权</b><i>✦</i><b>ERC-1155 份额流通</b><i>✦</i><b>Chainlink 预言机喂价</b><i>✦</i><b>USDC 稳定币结算</b><i>✦</i><b>DAO 份额治理</b><i>✦</i><b>IPFS 元数据存证</b><i>✦</i><b>免 MetaMask 托管签名</b><i>✦</i><b>Polygon 链上可查</b><i>✦</i><b>ERC-721 房产确权</b><i>✦</i><b>ERC-1155 份额流通</b><i>✦</i><b>Chainlink 预言机喂价</b><i>✦</i><b>USDC 稳定币结算</b><i>✦</i><b>DAO 份额治理</b><i>✦</i><b>IPFS 元数据存证</b><i>✦</i><b>免 MetaMask 托管签名</b><i>✦</i><b>Polygon 链上可查</b><i>✦</i></div></div>
+  </header>
+
   <main class="page">
     <div class="container">
-      <h1 class="section-title">在售资产</h1>
-      <p class="section-subtitle">浏览经过审计的高端房产份额，选择适合您的投资组合。</p>
 
       <form class="filter-bar" onsubmit="event.preventDefault();">
         <div class="filter-group">

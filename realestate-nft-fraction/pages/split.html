@@ -690,6 +690,7 @@ input, select, textarea {
         background-color: currentColor;
       }
     </style>
+    <link rel="stylesheet" href="../assets/cover.css">
 </head>
 <body>
   <nav class="navbar">
@@ -713,10 +714,28 @@ input, select, textarea {
     </div>
   </nav>
 
+  <header class="page-hero" style="--hero-img:url('../assets/property-villa.jpg')">
+    <div class="ph-bg"></div>
+    <div class="ph-grid"></div>
+    <div class="ph-glow ph-glow-a"></div>
+    <div class="ph-glow ph-glow-b"></div>
+    <div class="container ph-inner">
+      <div class="ph-crumb"><a href="./index.html">首页</a><span class="sep">/</span><span>房产拆分</span></div>
+      <div class="ph-eyebrow"><span class="ph-dot"></span>Tokenization · 房产拆分</div>
+      <h1 class="ph-title">一套房产，拆成 <span class="gold-text">1000 份</span> 权益</h1>
+      <p class="ph-sub">实体房产铸造为 ERC-721 主 NFT 确权，再拆分为 ERC-1155 等额份额流通。资产由合约 1:1 托管，拆分与份额总量全程链上可查、不可超发。</p>
+      <div class="ph-chips">
+        <span class="ph-chip"><i></i>ERC-721 主 NFT 确权</span>
+        <span class="ph-chip"><i></i>ERC-1155 等额份额</span>
+        <span class="ph-chip"><i></i>资产 1:1 合约托管</span>
+        <span class="ph-chip"><i></i>拆分记录链上可查</span>
+      </div>
+    </div>
+    <div class="ph-ticker" aria-hidden="true"><div class="ph-ticker-track"><b>ERC-721 房产确权</b><i>✦</i><b>ERC-1155 份额流通</b><i>✦</i><b>Chainlink 预言机喂价</b><i>✦</i><b>USDC 稳定币结算</b><i>✦</i><b>DAO 份额治理</b><i>✦</i><b>IPFS 元数据存证</b><i>✦</i><b>免 MetaMask 托管签名</b><i>✦</i><b>Polygon 链上可查</b><i>✦</i><b>ERC-721 房产确权</b><i>✦</i><b>ERC-1155 份额流通</b><i>✦</i><b>Chainlink 预言机喂价</b><i>✦</i><b>USDC 稳定币结算</b><i>✦</i><b>DAO 份额治理</b><i>✦</i><b>IPFS 元数据存证</b><i>✦</i><b>免 MetaMask 托管签名</b><i>✦</i><b>Polygon 链上可查</b><i>✦</i></div></div>
+  </header>
+
   <main class="page">
     <div class="container">
-      <h1 class="section-title">房产拆分</h1>
-      <p class="section-subtitle">将您的房产铸造为链上主 NFT，并拆分为可流通的等额份额。</p>
 
       <div class="notice" id="wallet-notice">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>

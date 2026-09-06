@@ -1,0 +1,226 @@
+/* ============================================================
+   ESTATE RWA — 震撼封面体系（首页 hero 增强 + 内页 page-hero）
+   深色电影质感 · 鎏金高光 · 动态光效 · 玻璃拟态 · 滚动技术条
+   仅定义封面专属类，不改动浅色主题令牌与功能区样式。
+   ============================================================ */
+
+:root {
+  --cover-ink: #0c0a08;
+  --cover-cream: #f7efe2;
+  --cover-gold: #c9a46a;
+  --cover-gold-bright: #f0d9a8;
+  --cover-gold-deep: #b98a4f;
+  --cover-line: rgba(201, 164, 106, 0.22);
+}
+
+/* ---------- 鎏金渐变文字（内页也可用） ---------- */
+.gold-text {
+  background: linear-gradient(100deg, #f0d9a8 0%, #c9a46a 45%, #f3e2bb 70%, #b98a4f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 200% auto;
+  animation: coverShine 5s linear infinite;
+}
+@keyframes coverShine { to { background-position: 200% center; } }
+
+@keyframes coverFadeUp { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes coverZoom { from { transform: scale(1.14); } to { transform: scale(1.03); } }
+@keyframes coverGlow { 0%, 100% { transform: translateY(0) scale(1); opacity: .8; } 50% { transform: translateY(30px) scale(1.06); opacity: 1; } }
+@keyframes coverPulse { 0% { box-shadow: 0 0 0 0 rgba(95, 211, 141, .55); } 70% { box-shadow: 0 0 0 9px rgba(95, 211, 141, 0); } 100% { box-shadow: 0 0 0 0 rgba(95, 211, 141, 0); } }
+@keyframes coverTicker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes coverFloat { 0%, 100% { transform: translateY(-50%); } 50% { transform: translateY(-54%); } }
+@keyframes coverTwinkle { 0%, 100% { opacity: .35; } 50% { opacity: .9; } }
+@keyframes coverBeam { from { transform: translateX(-5%) rotate(-2deg); } to { transform: translateX(5%) rotate(2.5deg); } }
+
+/* ============================================================
+   内页封面 .page-hero
+   ============================================================ */
+.page-hero {
+  position: relative;
+  overflow: hidden;
+  background: var(--cover-ink);
+  color: var(--cover-cream);
+  isolation: isolate;
+  padding: 118px 0 118px;
+}
+.page-hero .ph-inner { position: relative; z-index: 3; }
+
+.ph-bg {
+  position: absolute; inset: 0; z-index: -3;
+  background:
+    linear-gradient(92deg, rgba(10, 8, 6, .96) 0%, rgba(12, 10, 8, .84) 46%, rgba(12, 10, 8, .42) 100%),
+    linear-gradient(0deg, rgba(12, 10, 8, 1) 0%, rgba(12, 10, 8, .15) 42%, rgba(12, 10, 8, .55) 100%),
+    var(--hero-img, none) center / cover no-repeat;
+  transform: scale(1.05);
+  animation: coverZoom 16s ease-out forwards;
+}
+.ph-grid {
+  position: absolute; inset: 0; z-index: -2;
+  background-image:
+    linear-gradient(rgba(201, 164, 106, .07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 164, 106, .07) 1px, transparent 1px);
+  background-size: 54px 54px;
+  -webkit-mask-image: radial-gradient(ellipse 75% 80% at 28% 42%, #000 28%, transparent 78%);
+  mask-image: radial-gradient(ellipse 75% 80% at 28% 42%, #000 28%, transparent 78%);
+}
+.ph-glow {
+  position: absolute; z-index: -1; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201, 164, 106, .26) 0%, rgba(201, 164, 106, 0) 68%);
+  filter: blur(12px); pointer-events: none;
+}
+.ph-glow-a { width: 560px; height: 560px; right: -140px; top: -120px; animation: coverGlow 10s ease-in-out infinite; }
+.ph-glow-b { width: 420px; height: 420px; left: -120px; bottom: -160px; background: radial-gradient(circle, rgba(201, 164, 106, .16) 0%, rgba(201, 164, 106, 0) 70%); animation: coverGlow 13s ease-in-out infinite reverse; }
+
+.ph-crumb {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: .82rem; letter-spacing: .08em; color: rgba(247, 239, 226, .55);
+  margin-bottom: 22px;
+  animation: coverFadeUp .6s ease both;
+}
+.ph-crumb a { color: rgba(247, 239, 226, .75); transition: color .2s ease; }
+.ph-crumb a:hover { color: var(--cover-gold-bright); }
+.ph-crumb span.sep { color: rgba(201, 164, 106, .6); }
+
+.ph-eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 8px 16px; border-radius: 9999px;
+  border: 1px solid rgba(201, 164, 106, .4);
+  background: rgba(201, 164, 106, .08);
+  color: #e8d3ad; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase;
+  backdrop-filter: blur(6px);
+  animation: coverFadeUp .6s .05s ease both;
+}
+.ph-dot { width: 8px; height: 8px; border-radius: 50%; background: #5fd38d; animation: coverPulse 2s infinite; }
+
+.ph-title {
+  font-size: clamp(2.1rem, 4.6vw, 3.4rem);
+  font-weight: 800; line-height: 1.12; letter-spacing: -0.01em;
+  margin: 22px 0 18px; color: #fbf4e8;
+  max-width: 760px; text-shadow: 0 8px 40px rgba(0, 0, 0, .45);
+  animation: coverFadeUp .7s .12s ease both;
+}
+.ph-sub {
+  font-size: clamp(.98rem, 1.5vw, 1.12rem); line-height: 1.85;
+  color: rgba(247, 239, 226, .78); max-width: 620px; margin: 0 0 30px;
+  animation: coverFadeUp .7s .2s ease both;
+}
+.ph-chips {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  animation: coverFadeUp .7s .28s ease both;
+}
+.ph-chip {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 10px 16px; border-radius: 12px;
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid var(--cover-line);
+  color: rgba(247, 239, 226, .86); font-size: .88rem; font-weight: 500;
+  backdrop-filter: blur(8px);
+  transition: transform .18s ease, border-color .2s ease, background .2s ease;
+}
+.ph-chip:hover { transform: translateY(-2px); border-color: rgba(201, 164, 106, .5); background: rgba(201, 164, 106, .1); }
+.ph-chip i {
+  width: 7px; height: 7px; transform: rotate(45deg);
+  background: linear-gradient(135deg, var(--cover-gold-bright), var(--cover-gold-deep));
+  box-shadow: 0 0 10px rgba(201, 164, 106, .7);
+}
+
+/* 底部滚动技术条 */
+.ph-ticker {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
+  border-top: 1px solid rgba(201, 164, 106, .25);
+  background: rgba(8, 6, 4, .55);
+  backdrop-filter: blur(6px);
+  overflow: hidden; padding: 13px 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.ph-ticker-track { display: inline-flex; white-space: nowrap; animation: coverTicker 30s linear infinite; }
+.ph-ticker:hover .ph-ticker-track { animation-play-state: paused; }
+.ph-ticker-track b {
+  display: inline-flex; align-items: center;
+  font-weight: 600; font-size: .82rem; letter-spacing: .06em;
+  color: rgba(232, 211, 173, .8); padding: 0 6px;
+}
+.ph-ticker-track i {
+  font-style: normal; color: rgba(201, 164, 106, .65);
+  font-size: .7rem; padding: 0 18px;
+}
+
+@media (max-width: 768px) {
+  .page-hero { padding: 96px 0 104px; }
+  .ph-bg { background:
+      linear-gradient(180deg, rgba(10, 8, 6, .92) 0%, rgba(12, 10, 8, .8) 58%, rgba(12, 10, 8, .96) 100%),
+      var(--hero-img, none) center / cover no-repeat; }
+  .ph-chip { font-size: .82rem; padding: 9px 13px; }
+}
+
+/* ============================================================
+   首页 hero 增强（在现有 .hero-cover 基础上叠加）
+   ============================================================ */
+.hero-stars {
+  position: absolute; inset: 0; z-index: -2; pointer-events: none;
+  background-image:
+    radial-gradient(1.4px 1.4px at 20% 30%, rgba(255, 240, 210, .8), transparent 100%),
+    radial-gradient(1px 1px at 65% 22%, rgba(255, 240, 210, .55), transparent 100%),
+    radial-gradient(1.6px 1.6px at 42% 68%, rgba(255, 240, 210, .6), transparent 100%),
+    radial-gradient(1px 1px at 80% 55%, rgba(255, 240, 210, .5), transparent 100%),
+    radial-gradient(1.2px 1.2px at 30% 82%, rgba(255, 240, 210, .55), transparent 100%);
+  background-size: 260px 260px, 320px 320px, 200px 200px, 300px 300px, 240px 240px;
+  -webkit-mask-image: radial-gradient(ellipse 90% 90% at 40% 30%, #000 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse 90% 90% at 40% 30%, #000 20%, transparent 75%);
+  animation: coverTwinkle 5s ease-in-out infinite;
+}
+.hero-aurora {
+  position: absolute; inset: -25%; z-index: -2; pointer-events: none;
+  filter: blur(46px); opacity: .55;
+  background:
+    conic-gradient(from 200deg at 72% 28%, rgba(201, 164, 106, .2), transparent 42%),
+    linear-gradient(115deg, transparent 32%, rgba(201, 164, 106, .14) 46%, transparent 62%);
+  animation: coverBeam 15s ease-in-out infinite alternate;
+}
+
+/* 悬浮「链上状态」玻璃卡 */
+.hero-floatcard {
+  position: absolute; right: 5%; top: 50%; transform: translateY(-50%);
+  width: 304px; z-index: 4;
+  border-radius: 18px; padding: 20px 22px;
+  background: rgba(20, 16, 11, .62);
+  border: 1px solid rgba(201, 164, 106, .32);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 34px 90px -30px rgba(0, 0, 0, .85), inset 0 1px 0 rgba(255, 255, 255, .06);
+  animation: coverFloat 7s ease-in-out infinite;
+}
+.hfc-head {
+  display: flex; align-items: center; gap: 9px;
+  font-size: .78rem; letter-spacing: .14em; text-transform: uppercase;
+  color: #e8d3ad; padding-bottom: 14px; margin-bottom: 12px;
+  border-bottom: 1px solid rgba(201, 164, 106, .2);
+}
+.hfc-live { width: 8px; height: 8px; border-radius: 50%; background: #5fd38d; animation: coverPulse 2s infinite; }
+.hfc-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 9px 0; font-size: .9rem;
+}
+.hfc-row span { color: rgba(247, 239, 226, .55); }
+.hfc-row b { color: #f3e6cf; font-weight: 600; font-variant-numeric: tabular-nums; }
+.hfc-foot {
+  margin-top: 12px; padding-top: 13px; border-top: 1px solid rgba(201, 164, 106, .18);
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: .8rem; color: rgba(247, 239, 226, .55);
+}
+.hfc-foot .hfc-block { color: var(--cover-gold-bright); font-family: var(--estate-font-mono, monospace); }
+
+/* 首页底部滚动技术条（复用 .ph-ticker 视觉，独立类避免冲突） */
+.hero-ticker {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
+  border-top: 1px solid rgba(201, 164, 106, .25);
+  background: rgba(8, 6, 4, .5);
+  backdrop-filter: blur(6px);
+  overflow: hidden; padding: 13px 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.hero-ticker .ph-ticker-track { animation-duration: 32s; }
+
+@media (max-width: 1100px) { .hero-floatcard { display: none; } }
