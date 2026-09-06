@@ -1,5 +1,5 @@
 /*
- * EstateWallet —— 仿 MetaMask 的虚拟钱包交互层（无需安装插件）
+ * EstateWallet —— 钱包交互层（可挂接 MetaMask，亦内置托管钱包，无插件也可体验）
  * 提供：连接请求弹窗 / 交易签名确认弹窗 / 链上交易回执弹窗
  * 真实上链仍由 app.js 调后端（本地 Hardhat）完成，本组件负责 Web3 仪式感与交易回执展示。
  * 对外暴露 window.EstateWallet = { confirmConnect(), confirmTx(order), receipt(order) }
@@ -110,7 +110,7 @@
   function head() {
     return '<div class="ew-head">' +
       '<span class="ew-logo"><svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M12 2 3 7v10l9 5 9-5V7l-9-5Zm0 2.3 6.8 3.8L12 11.9 5.2 8.1 12 4.3ZM5 9.6l6 3.3v6.3l-6-3.3V9.6Zm8 9.6v-6.3l6-3.3v6.3l-6 3.3Z"/></svg></span>' +
-      '<div><div class="ew-wtitle">EstateWallet</div><div class="ew-wsub">托管钱包 · 无需安装插件</div></div>' +
+      '<div><div class="ew-wtitle">EstateWallet</div><div class="ew-wsub">可挂接 MetaMask · 内置托管钱包</div></div>' +
       '<span class="ew-net"><i></i>' + NETWORK + '</span>' +
       '<button class="ew-x" data-ew-close type="button" aria-label="关闭">&times;</button></div>';
   }
@@ -146,7 +146,7 @@
           ['账户地址', shortAddr(addr)],
           ['授权范围', '查看地址 · 请求签名 · 发起交易']
         ]) +
-        '<div class="ew-notice">连接后由托管钱包代你管理密钥并在链上签名，无需安装 MetaMask、无需保存助记词，评委一键即可体验完整 Web3 流程。</div>' +
+        '<div class="ew-notice">可挂接 MetaMask 自行管理密钥并签名；未安装 MetaMask 时也可使用内置托管钱包，由平台代为签名上链，无需助记词即可完整体验 Web3 流程。</div>' +
         '<div class="ew-actions">' +
         '<button class="ew-btn ew-btn-reject" type="button" data-ew-close>拒绝</button>' +
         '<button class="ew-btn ew-btn-confirm" type="button" id="ew-connect-btn">连接</button>' +

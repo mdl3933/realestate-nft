@@ -1,5 +1,5 @@
 /*
- * ESTATE 平台共享数据层（无需 MetaMask）
+ * ESTATE 平台共享数据层（可挂接 MetaMask，内置托管钱包）
  * - 账号：用户名 + 密码登录，平台托管钱包（本地后端为真实链上钱包，线上为演示账户）
  * - 订单：提交后记录、更新持仓、跳转个人中心
  * - 双模式：检测到本地后端(http://127.0.0.1:3001)走真实区块链；否则用浏览器本地存储
@@ -253,7 +253,7 @@
         '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
           '<h3 style="margin:0;font-size:20px;letter-spacing:.08em">ESTATE 账户</h3>' +
           '<button id="ea-close" style="background:none;border:none;color:#ebd6bc;font-size:22px;cursor:pointer;line-height:1">×</button></div>' +
-        '<p style="margin:0 0 18px;font-size:13px;color:#bfa98a">平台托管钱包 · 无需安装 MetaMask</p>' +
+        '<p style="margin:0 0 18px;font-size:13px;color:#bfa98a">可挂接 MetaMask · 内置托管钱包</p>' +
         '<div style="display:flex;gap:8px;margin-bottom:18px">' +
           '<button id="ea-tab-login" style="flex:1;padding:9px;border-radius:10px;border:1px solid #c9a46a;background:#c9a46a;color:#1c1611;font-weight:600;cursor:pointer">登录</button>' +
           '<button id="ea-tab-reg" style="flex:1;padding:9px;border-radius:10px;border:1px solid rgba(201,164,106,.4);background:transparent;color:#ebd6bc;cursor:pointer">注册</button></div>' +
@@ -325,7 +325,7 @@
       btn.onclick = function () { if (confirm('退出登录 ' + u.username + '？')) logout(); };
     } else {
       label.textContent = '登录 / 连接钱包';
-      btn.title = '连接 EstateWallet（无需安装 MetaMask）';
+      btn.title = '连接钱包（支持 MetaMask 或托管钱包）';
       btn.onclick = function () {
         if (window.EstateWallet && EstateWallet.confirmConnect) {
           EstateWallet.confirmConnect().then(function (ok) { if (ok) openAuth(); });
