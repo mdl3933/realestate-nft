@@ -367,9 +367,11 @@
           order = { type: 'sell', property: sp, propertyName: propName(sp), price: sprice, amount: samount, total: sprice * samount };
         } else if (page === 'split.html' || /拆分|铸造|发布/.test(btnText)) {
           var fp = val('property') || val('split-property');
-          var famount = Number(val('fractions') || val('total-fractions') || val('amount') || 100);
-          var fprice = Number(val('fraction-price') || val('price') || (PROPERTIES[fp] && PROPERTIES[fp].price) || 0);
-          if (!fp && !val('property-name')) return toast('请填写房产信息', 'error');
+          var famount = Number(val('fractions') || val('total-fractions') || val('total-shares') || val('amount') || 100);
+          var totalVal = Number(val('total-value') || val('property-value') || 0);
+          var fprice = Number(val('fraction-price') || val('price') || 0) || (famount && totalVal ? Math.round(totalVal / famount) : ((PROPERTIES[fp] && PROPERTIES[fp].price) || 0));
+          if (!fp && !val('property-name')) return toast('请填写房产名称', 'error');
+          if (!famount || famount < 1) return toast('请填写有效的总拆分份额', 'error');
           order = { type: 'split', property: fp || ('prop' + Date.now()), propertyName: fp ? propName(fp) : (val('property-name') || '新房产'), price: fprice, amount: famount, total: fprice * famount };
         } else if (page === 'redeem.html' || /赎回|合并/.test(btnText)) {
           var rp = val('property') || val('redeem-property') || val('holding');
@@ -387,8 +389,7 @@
 
     document.querySelectorAll('button').forEach(function (b) {
       var t = (b.textContent || '').trim();
-      if (/^(一键领取|领取分红|领取收益|确认领取)$/.test(t)) {
-        if (b.closest('form')) return;
+      if (!b.closest('form') && (/领取|分红/.test(t) || /claim/i.test(b.id || ''))) {
         b.addEventListener('click', function () {
           var p = b.getAttribute('data-claim') || 'villa';
           submitOrder({ type: 'claim', property: p, propertyName: propName(p), price: 0, amount: 1, total: Math.round((PROPERTIES[p] ? PROPERTIES[p].price : 6000) * 0.004) });
