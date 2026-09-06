@@ -143,6 +143,42 @@
     });
   }
 
+  // ---------- 导出订单 CSV ----------
+  function csvCell(v) { var s = (v === null || v === undefined) ? '' : String(v); return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
+  var TYPE_CN = { buy: '买入', sell: '卖出', split: '拆分', redeem: '赎回', claim: '分红', subscribe: '认购' };
+  var STATUS_CN = { filled: '已成交', pending: '链上确认中', failed: '失败' };
+  function ordersToCsv(list) {
+    var head = ['订单号', '用户', '类型', '房产标识', '房产名称', '单价(元)', '数量', '总额(元)', '状态', '链上交易哈希', '时间'];
+    var rows = list.map(function (o) {
+      return [o.id, o.owner || (user() ? user().username : ''), TYPE_CN[o.type] || o.type, o.property || '', o.propertyName || '',
+        o.price || 0, o.amount || 0, o.total || 0, STATUS_CN[o.status] || o.status || '', o.tx || '',
+        new Date(o.createdAt).toLocaleString('zh-CN', { hour12: false })];
+    });
+    return '\uFEFF' + [head].concat(rows).map(function (r) { return r.map(csvCell).join(','); }).join('\r\n');
+  }
+  function downloadCsv(csv, name) {
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a'); a.href = url; a.download = name;
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 300);
+  }
+  function exportOrders() {
+    var u = user();
+    function localFallback() {
+      var list = getOrders().filter(function (o) { return !u || o.owner === u.username; });
+      if (!list.length) { toast('暂无订单可导出', 'error'); return; }
+      downloadCsv(ordersToCsv(list), 'estate-orders.csv');
+      toast('订单 CSV 已导出（浏览器本地记录）', 'success');
+    }
+    if (API && u && getToken()) {
+      fetch(API + '/orders/export', { headers: { Authorization: 'Bearer ' + getToken() } })
+        .then(function (r) { if (!r.ok) throw new Error('x'); return r.text(); })
+        .then(function (txt) { downloadCsv(txt, 'estate-orders.csv'); toast('订单 CSV 已导出（含链上记录）', 'success'); })
+        .catch(localFallback);
+    } else { localFallback(); }
+  }
+
   // ---------- Toast ----------
   function toast(msg, type) {
     var el = document.getElementById('estate-toast');
@@ -379,12 +415,17 @@
       '<div style="overflow-x:auto;border:1px solid rgba(201,164,106,.2);border-radius:14px;margin-bottom:28px"><table style="width:100%;border-collapse:collapse;min-width:560px">' +
         '<thead><tr style="background:rgba(201,164,106,.1);color:#c9a46a"><th style="padding:12px 16px;text-align:left;font-size:13px">房产</th><th style="padding:12px 16px;text-align:right;font-size:13px">持有份额</th><th style="padding:12px 16px;text-align:right;font-size:13px">持仓成本</th><th style="padding:12px 16px;text-align:right;font-size:13px">估值</th></tr></thead>' +
         '<tbody>' + (holdRows || '<tr><td colspan="4" style="padding:24px;text-align:center;color:#9a8a72">暂无持仓，去 <a href="./trade.html" style="color:#c9a46a">份额交易</a> 买入吧</td></tr>') + '</tbody></table></div>' +
-      '<h2 class="section-title" style="font-size:22px">我的订单' + (highlighted ? ' <span style="font-size:13px;color:#7fbf8a">（最新订单已记录）</span>' : '') + '</h2>' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:4px">' +
+        '<h2 class="section-title" style="font-size:22px;margin:0">我的订单' + (highlighted ? ' <span style="font-size:13px;color:#7fbf8a">（最新订单已记录）</span>' : '') + '</h2>' +
+        '<button id="estate-export-csv" type="button" style="background:transparent;border:1px solid rgba(201,164,106,.55);color:#c9a46a;padding:9px 18px;border-radius:10px;font-size:13px;cursor:pointer;white-space:nowrap">导出订单 CSV</button>' +
+      '</div>' +
       '<div style="overflow-x:auto;border:1px solid rgba(201,164,106,.2);border-radius:14px"><table style="width:100%;border-collapse:collapse;min-width:680px">' +
         '<thead><tr style="background:rgba(201,164,106,.1);color:#c9a46a"><th style="padding:12px 16px;text-align:left;font-size:13px">订单号</th><th style="padding:12px 16px;text-align:left;font-size:13px">类型</th><th style="padding:12px 16px;text-align:left;font-size:13px">房产</th><th style="padding:12px 16px;text-align:right;font-size:13px">单价</th><th style="padding:12px 16px;text-align:right;font-size:13px">数量</th><th style="padding:12px 16px;text-align:right;font-size:13px">总额</th><th style="padding:12px 16px;text-align:center;font-size:13px">状态</th><th style="padding:12px 16px;text-align:left;font-size:13px">时间</th></tr></thead>' +
         '<tbody>' + (orderRows || '<tr><td colspan="8" style="padding:24px;text-align:center;color:#9a8a72">暂无订单记录</td></tr>') + '</tbody></table></div>' +
       '<p style="margin-top:16px;font-size:12px;color:' + (u && u.chain ? '#7fbf8a' : '#9a8a72') + '">' + (u && u.chain ? '● 已连接本地区块链，订单由托管钱包签名上链。' : '● 当前为浏览器演示模式；在本地启动后端与 Hardhat 节点后，订单将真实上链。') + '</p>';
     main.insertBefore(sec, main.firstChild);
+    var exportBtn = sec.querySelector('#estate-export-csv');
+    if (exportBtn) exportBtn.addEventListener('click', exportOrders);
   }
 
   // ---------- 启动 ----------
@@ -393,7 +434,7 @@
       hijackWalletBtn();
       hookForms();
       if (location.pathname.indexOf('profile.html') !== -1) renderProfile();
-      window.ESTATE = { user: user, logout: logout, openAuth: openAuth, submitOrder: submitOrder, API: function () { return API; }, PROPERTIES: PROPERTIES };
+      window.ESTATE = { user: user, logout: logout, openAuth: openAuth, submitOrder: submitOrder, exportOrders: exportOrders, API: function () { return API; }, PROPERTIES: PROPERTIES };
     });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

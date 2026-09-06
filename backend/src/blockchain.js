@@ -98,6 +98,10 @@ async function unlockSigner(keystoreJson, password) {
   const w = await ethers.Wallet.fromEncryptedJson(keystoreJson, password);
   return w.connect(provider);
 }
+// 由私钥直接构建签名者（用于后端重启后恢复持久化会话，无需用户再次输入密码）
+function signerFromKey(privateKey) {
+  return new ethers.Wallet(privateKey, provider);
+}
 
 async function balance(addr) {
   return ethers.formatEther(await provider.getBalance(addr));
@@ -174,4 +178,4 @@ async function executeOrder(order, signer) {
   throw new Error('未知订单类型: ' + order.type);
 }
 
-module.exports = { init, chainInfo, createWallet, encryptWallet, unlockSigner, balance, holdings, executeOrder, ethers };
+module.exports = { init, chainInfo, createWallet, encryptWallet, unlockSigner, signerFromKey, balance, holdings, executeOrder, ethers };
