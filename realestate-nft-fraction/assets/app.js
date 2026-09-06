@@ -12,7 +12,13 @@
     villa:     { name: '虹桥轻奢别墅',     price: 18000 },
     loft:      { name: '静安 Loft 公寓',   price: 4200 },
     office:    { name: '陆家嘴甲级写字楼', price: 12500 },
-    apartment: { name: '徐汇精装公寓',     price: 6000 }
+    apartment: { name: '徐汇精装公寓',     price: 6000 },
+    tower:     { name: '临港刚需高层',     price: 800 },
+    cozy:      { name: '花桥温馨小两居',   price: 600 },
+    shop:      { name: '社区沿街旺铺',     price: 1200 },
+    family:    { name: '杭州家庭三居',     price: 2000 },
+    studio:    { name: '苏州青年公寓',     price: 500 },
+    townhouse: { name: '嘉兴花园洋房',     price: 1500 }
   };
   function propName(v) {
     if (!v) return '—';
