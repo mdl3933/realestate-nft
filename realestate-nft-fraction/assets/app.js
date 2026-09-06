@@ -123,8 +123,18 @@
   }
 
   // ---------- 提交订单 ----------
-  function submitOrder(order) {
-    if (!user()) { openAuth(); return Promise.reject(new Error('请先登录')); }
+  async function submitOrder(order) {
+    if (!user()) {
+      if (window.EstateWallet && EstateWallet.confirmConnect) {
+        var connected = await EstateWallet.confirmConnect();
+        if (connected) openAuth();
+      } else { openAuth(); }
+      return;
+    }
+    if (window.EstateWallet && EstateWallet.confirmTx) {
+      var signed = await EstateWallet.confirmTx(order);
+      if (!signed) { toast('已拒绝签名，交易未发送', 'info'); return; }
+    }
     order.id = 'ORD' + Date.now().toString(36).toUpperCase() + Math.floor(Math.random() * 999);
     order.createdAt = Date.now();
     order.status = API ? 'pending' : 'filled';
@@ -146,8 +156,12 @@
     }
     return p.then(function () {
       if (order.status === 'failed') { toast('订单失败：' + (order.error || '链上交易未确认'), 'error'); return order; }
-      toast('订单已提交，正在跳转…', 'success');
-      setTimeout(function () { location.href = 'profile.html?order=' + order.id; }, 700);
+      if (window.EstateWallet && EstateWallet.receipt) {
+        EstateWallet.receipt(order);
+      } else {
+        toast('订单已提交，正在跳转…', 'success');
+        setTimeout(function () { location.href = 'profile.html?order=' + order.id; }, 700);
+      }
       return order;
     });
   }
@@ -295,9 +309,13 @@
       btn.title = '点击退出登录';
       btn.onclick = function () { if (confirm('退出登录 ' + u.username + '？')) logout(); };
     } else {
-      label.textContent = '登录 / 注册';
-      btn.title = '登录或注册（无需 MetaMask）';
-      btn.onclick = function () { openAuth(); };
+      label.textContent = '登录 / 连接钱包';
+      btn.title = '连接 EstateWallet（无需安装 MetaMask）';
+      btn.onclick = function () {
+        if (window.EstateWallet && EstateWallet.confirmConnect) {
+          EstateWallet.confirmConnect().then(function (ok) { if (ok) openAuth(); });
+        } else { openAuth(); }
+      };
     }
   }
   function hijackWalletBtn() {
