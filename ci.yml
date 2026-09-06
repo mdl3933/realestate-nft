@@ -1,0 +1,33 @@
+name: Contracts CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  hardhat-test:
+    name: Compile & Unit Test (Hardhat)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: realestate-nft-contracts
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: realestate-nft-contracts/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Compile contracts
+        run: npx hardhat compile
+
+      - name: Run unit tests
+        run: npx hardhat test
