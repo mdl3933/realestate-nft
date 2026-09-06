@@ -713,15 +713,33 @@ input, select, textarea {
     </div>
   </nav>
 
-  <header class="hero">
-    <div class="container hero-inner">
-      <h1>碎片化不动产 NFT 权益交易</h1>
-      <p>以区块链重新定义高端房产所有权。低门槛持有全球优质不动产份额，安全透明，随时交易。</p>
+  <header class="hero-cover">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="container hero-cover-inner">
+      <div class="hero-badge">
+        <span class="hero-dot"></span>
+        <span>RWA 真实资产上链 · 免插件钱包 · 交易可在区块浏览器查验</span>
+      </div>
+      <h1 class="hero-title">把一处豪宅<br>拆成 <span class="gold-text">1000 份</span> 链上权益</h1>
+      <p class="hero-sub">房产铸造为 ERC-721 主 NFT，拆分为 ERC-1155 等额份额流通；Chainlink 喂价、USDC 结算、DAO 份额治理、IPFS 凭证存证。用户名即可开户，下单由托管钱包签名上链，无需 MetaMask。</p>
       <div class="hero-actions">
-        <a href="./marketplace.html" class="btn btn-primary btn-lg" data-dom-id="cta-explore-market">浏览在售资产</a>
-        <a href="./split.html" class="btn btn-outline btn-lg" data-dom-id="cta-split-property">拆分我的房产</a>
+        <a href="./marketplace.html" class="btn-gold" data-dom-id="cta-explore-market">浏览在售资产</a>
+        <a href="./trade.html" class="btn-ghost-gold" data-dom-id="cta-trade-now">立即体验链上交易</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-chip"><div class="stat-num">¥3.6 亿+</div><div class="stat-label">上链房产估值</div></div>
+        <div class="stat-chip"><div class="stat-num">4 处</div><div class="stat-label">已拆分不动产</div></div>
+        <div class="stat-chip"><div class="stat-num">1000</div><div class="stat-label">每处标准份额</div></div>
+        <div class="stat-chip"><div class="stat-num">0</div><div class="stat-label">需要 MetaMask</div></div>
+      </div>
+      <div class="hero-trust">
+        <span class="trust-label">技术底座</span>
+        <b>Polygon</b><i>·</i><b>Chainlink</b><i>·</i><b>IPFS</b><i>·</i><b>DAO</b><i>·</i><b>ERC-721 / 1155</b>
       </div>
     </div>
+    <div class="hero-scroll"><span class="mouse"></span>下滑探索</div>
   </header>
 
   <main>
@@ -735,9 +753,9 @@ input, select, textarea {
               <div class="feature-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
               </div>
-              <h3 class="card-title">钱包连接</h3>
-              <p class="card-meta">一键连接 MetaMask 等 Web3 钱包，安全签署每笔交易。</p>
-              <button class="btn btn-primary btn-sm" id="feature-wallet">连接钱包</button>
+              <h3 class="card-title">免插件开户</h3>
+              <p class="card-meta">用户名 + 密码即可注册，后端创建链上托管钱包并签名上链，无需安装 MetaMask。</p>
+              <button class="btn btn-primary btn-sm" id="feature-wallet">立即开户</button>
             </div>
           </article>
           <article class="card">
@@ -851,21 +869,14 @@ input, select, textarea {
         menuToggle.setAttribute('aria-expanded', String(open));
       });
 
-      const walletBtns = document.querySelectorAll('#wallet-btn, #feature-wallet');
-      walletBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const label = btn.querySelector('span') || btn;
-          if (label.textContent.includes('连接')) {
-            label.textContent = '0x71C…9A3e';
-            btn.classList.remove('btn-primary');
-            btn.classList.add('btn-neutral');
-          } else {
-            label.textContent = '连接钱包';
-            btn.classList.add('btn-primary');
-            btn.classList.remove('btn-neutral');
-          }
+      // 功能卡“立即开户”：交给 app.js 的登录/注册弹窗
+      const featureWallet = document.getElementById('feature-wallet');
+      if (featureWallet) {
+        featureWallet.addEventListener('click', () => {
+          if (window.ESTATE && typeof window.ESTATE.openAuth === 'function') window.ESTATE.openAuth();
+          else window.location.href = './profile.html';
         });
-      });
+      }
     })();
   </script>
 
@@ -911,6 +922,136 @@ input, select, textarea {
     .price { font-size: 1.1rem; font-weight: 600; color: var(--estate-primary-700); }
     .yield { font-size: 0.85rem; color: var(--estate-state-success); font-weight: 500; }
     .stat-row { display: flex; gap: var(--estate-s-5); color: var(--estate-muted-foreground); font-size: 0.9rem; }
+  </style>
+
+  <style>
+  /* ===== 封面：深色电影质感 + 鎏金 RWA ===== */
+  .hero-cover {
+    position: relative;
+    min-height: 92vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: #0c0a08;
+    color: #f7efe2;
+    isolation: isolate;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: -3;
+    background:
+      linear-gradient(90deg, rgba(10,8,6,0.95) 0%, rgba(12,10,8,0.82) 42%, rgba(12,10,8,0.45) 100%),
+      linear-gradient(0deg, rgba(12,10,8,1) 0%, rgba(12,10,8,0) 38%),
+      url('../assets/hero-real-estate.jpg') center/cover no-repeat;
+    transform: scale(1.05);
+    animation: heroZoom 18s ease-out forwards;
+  }
+  @keyframes heroZoom { from { transform: scale(1.12); } to { transform: scale(1.02); } }
+  .hero-grid {
+    position: absolute; inset: 0; z-index: -2;
+    background-image:
+      linear-gradient(rgba(201,164,106,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,164,106,0.06) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 70% at 30% 40%, #000 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 30% 40%, #000 30%, transparent 75%);
+  }
+  .hero-glow {
+    position: absolute; z-index: -1;
+    width: 620px; height: 620px; right: -120px; top: 8%;
+    background: radial-gradient(circle, rgba(201,164,106,0.28) 0%, rgba(201,164,106,0) 68%);
+    filter: blur(10px);
+    animation: glowFloat 9s ease-in-out infinite;
+  }
+  @keyframes glowFloat { 0%,100% { transform: translateY(0); opacity:.85; } 50% { transform: translateY(28px); opacity:1; } }
+  .hero-cover-inner { position: relative; padding: 120px 0 90px; max-width: 1200px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 8px 16px; border-radius: 9999px;
+    border: 1px solid rgba(201,164,106,0.4);
+    background: rgba(201,164,106,0.08);
+    color: #e8d3ad; font-size: 0.82rem; letter-spacing: 0.04em;
+    backdrop-filter: blur(6px);
+    animation: fadeUp .7s ease both;
+  }
+  .hero-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #5fd38d;
+    box-shadow: 0 0 0 0 rgba(95,211,141,0.6); animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(95,211,141,0.55);} 70% { box-shadow: 0 0 0 9px rgba(95,211,141,0);} 100% { box-shadow: 0 0 0 0 rgba(95,211,141,0);} }
+  .hero-title {
+    font-size: clamp(2.4rem, 6vw, 4.4rem);
+    font-weight: 800; line-height: 1.08; letter-spacing: -0.01em;
+    margin: 26px 0 22px; color: #fbf4e8;
+    animation: fadeUp .8s .08s ease both;
+    text-shadow: 0 8px 40px rgba(0,0,0,0.45);
+  }
+  .gold-text {
+    background: linear-gradient(100deg, #f0d9a8 0%, #c9a46a 45%, #f3e2bb 70%, #b98a4f 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    background-size: 200% auto; animation: shine 5s linear infinite;
+  }
+  @keyframes shine { to { background-position: 200% center; } }
+  .hero-sub {
+    font-size: clamp(1rem, 1.6vw, 1.18rem); line-height: 1.8;
+    color: rgba(247,239,226,0.78); max-width: 640px; margin: 0 0 36px;
+    animation: fadeUp .8s .16s ease both;
+  }
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; animation: fadeUp .8s .24s ease both; }
+  .btn-gold {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 15px 34px; border-radius: 12px; font-weight: 600; font-size: 1rem;
+    color: #241a0e;
+    background: linear-gradient(120deg, #f0d9a8, #c9a46a);
+    box-shadow: 0 10px 30px -8px rgba(201,164,106,0.55);
+    transition: transform .15s ease, box-shadow .2s ease;
+  }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 16px 40px -8px rgba(201,164,106,0.7); }
+  .btn-ghost-gold {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 15px 30px; border-radius: 12px; font-weight: 600; font-size: 1rem;
+    color: #f0d9a8; border: 1px solid rgba(201,164,106,0.55);
+    background: rgba(201,164,106,0.06); backdrop-filter: blur(6px);
+    transition: background .2s ease, transform .15s ease;
+  }
+  .btn-ghost-gold:hover { background: rgba(201,164,106,0.16); transform: translateY(-2px); }
+  .hero-stats {
+    display: grid; grid-template-columns: repeat(4, minmax(0,1fr));
+    gap: 14px; margin-top: 52px; max-width: 760px;
+    animation: fadeUp .8s .32s ease both;
+  }
+  .stat-chip {
+    padding: 16px 18px; border-radius: 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(201,164,106,0.22);
+    backdrop-filter: blur(8px);
+  }
+  .stat-num { font-size: 1.5rem; font-weight: 700; color: #f0d9a8; font-variant-numeric: tabular-nums; }
+  .stat-label { font-size: 0.82rem; color: rgba(247,239,226,0.62); margin-top: 2px; }
+  .hero-trust {
+    margin-top: 34px; display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
+    color: rgba(247,239,226,0.6); font-size: 0.9rem;
+    animation: fadeUp .8s .4s ease both;
+  }
+  .hero-trust .trust-label {
+    color: rgba(247,239,226,0.42); letter-spacing: 0.12em; font-size: 0.78rem; text-transform: uppercase; margin-right: 4px;
+  }
+  .hero-trust b { color: #e8d3ad; font-weight: 600; }
+  .hero-trust i { color: rgba(201,164,106,0.5); font-style: normal; }
+  .hero-scroll {
+    position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    font-size: 0.75rem; letter-spacing: 0.2em; color: rgba(247,239,226,0.5);
+  }
+  .mouse { width: 22px; height: 36px; border: 2px solid rgba(201,164,106,0.5); border-radius: 12px; position: relative; }
+  .mouse::after { content:''; position:absolute; top:7px; left:50%; width:3px; height:7px; margin-left:-1.5px; border-radius:2px; background:#c9a46a; animation: wheel 1.6s infinite; }
+  @keyframes wheel { 0% { opacity:1; transform: translateY(0);} 70% { opacity:0; transform: translateY(10px);} 100% { opacity:0; } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 768px) {
+    .hero-cover { min-height: 88vh; }
+    .hero-stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .hero-cover-inner { padding: 110px 0 80px; }
+    .hero-bg { background: linear-gradient(180deg, rgba(10,8,6,0.9) 0%, rgba(12,10,8,0.78) 60%, rgba(12,10,8,0.95) 100%), url('../assets/hero-real-estate.jpg') center/cover no-repeat; }
+  }
   </style>
   <script src="../assets/app.js"></script>
 </body>
