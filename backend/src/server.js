@@ -182,6 +182,17 @@ app.post('/api/orders', auth, async (req, res) => {
   res.json({ id: order.id, status: order.status, txHash: order.tx, address: rec.address, error: order.error, note: order.note });
 });
 
+// ---------- 退出登录：清除内存会话与持久化会话 ----------
+app.post('/api/auth/logout', (req, res) => {
+  const h = req.headers.authorization || '';
+  const token = h.startsWith('Bearer ') ? h.slice(7) : null;
+  if (token) {
+    sessions.delete(token);
+    if (db.sessions && db.sessions[token]) { delete db.sessions[token]; saveDB(db); }
+  }
+  res.json({ ok: true });
+});
+
 app.get('/api/orders', (req, res) => {
   const username = req.query.username || req.headers['x-username'];
   const list = username ? db.orders.filter((o) => o.owner === username) : db.orders;

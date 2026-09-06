@@ -1,82 +1,54 @@
-# ESTATE — 碎片化不动产 NFT 权益交易系统
+# 房产 NFT 份额化交易平台（RealEstate NFT Fraction）
 
-将商业地产拆分为 ERC-1155 碎片化权益代币，覆盖房产 NFT 铸造、碎片化、份额买卖、租金分红与赎回合并全流程。**用户名 + 密码登录，平台托管钱包，无需安装 MetaMask。**
+把一处房产铸成 NFT，再拆分成若干份额（ERC20）进行认购、买卖、分红与赎回的全栈演示项目。
+**无需 MetaMask**：用户用用户名 + 密码注册，后端为其创建并托管链上钱包（私钥经 AES 加密保存），下单由后端签名上链。
 
-## 在线预览（GitHub Pages）
+## 在线预览
+- 首页：https://mdl3933.github.io/realestate-nft/
+- 份额交易页：https://mdl3933.github.io/realestate-nft/realestate-nft-fraction/pages/trade.html
 
-打开即用（前端演示模式，订单用浏览器本地存储记录并跳转）：
-
-**https://mdl3933.github.io/realestate-nft/realestate-nft-fraction/pages/trade.html**
-
-> 在线版可完整体验：注册/登录、提交买/卖单、订单记录、跳转个人中心、持仓与收益展示。
-> 链上交易需在本地按下面步骤启动 Hardhat 节点 + 后端。
+> 在线 GitHub Pages 为纯静态演示：注册登录、下单、订单记录与跳转、CSV 导出均可用，数据保存在浏览器本地（localStorage）。
+> 真实链上交易在本地运行后端 + Hardhat 节点时生效。
 
 ## 目录结构
+- `realestate-nft-fraction/`：前端（原生 HTML + Tailwind，本地加载），数据层 `assets/app.js`
+- `realestate-nft-contracts/`：Solidity 合约（EstateNFT / FractionToken / EstateMarket）+ Hardhat 部署脚本
+- `backend/`：Node.js + Express + ethers v6 后端，托管钱包、订单上链、托管前端
 
-```
-realestate-nft-fraction/      前端（7 页面 + assets/app.js 数据层 + 房产图片）
-realestate-nft-contracts/     Hardhat 智能合约（EstateNFT / FractionToken / EstateMarket）
-backend/                      Express 后端（托管钱包、订单签名上链、托管前端静态页）
-```
+## 主要功能
+- **订单记录与跳转**：提交买/卖/拆分/分红/赎回后自动记录订单、更新持仓、跳转个人中心并高亮最新订单。
+- **订单导出 CSV**：个人中心「导出订单 CSV」按钮；链上模式含交易哈希，带 BOM 中文表头，Excel 直接打开不乱码。
+- **会话持久化**：登录态加密落盘，**后端重启免登录**；退出登录会同时清除服务端会话。
+- **免插件钱包**：用户名密码注册，后端创建托管钱包，自动发放测试 ETH。
+- **链上交易**：买单/卖单通过 EstateMarket 合约成交，持仓从链上 `balanceOf` 实时读取。
 
-## 本地全链路运行（真实区块链，无需 MetaMask）
-
-需要 Node.js 18+。开 **3 个终端**：
-
-### 终端 1：启动本地区块链
-
+## 本地启动（三个终端）
 ```bash
+# 终端1：本地区块链节点（chainId 31337）
 cd realestate-nft-contracts
 npm install
 npx hardhat node
-```
 
-### 终端 2：部署合约 + 种子数据
-
-```bash
+# 终端2：部署合约 + 种子数据（4 套房产，各拆 1000 份并挂卖单）
 cd realestate-nft-contracts
 npx hardhat run scripts/deploy-local.js --network localhost
-```
 
-脚本会部署 3 个合约、铸造 4 套房产、各拆分为 1000 份并挂出卖单，
-同时把合约地址写入 `backend/.env` 与 `realestate-nft-fraction/assets/contracts.json`。
-
-### 终端 3：启动后端（自动托管前端）
-
-```bash
+# 终端3：后端（同时托管前端，访问 http://127.0.0.1:3001/pages/index.html）
 cd backend
 npm install
 npm start
 ```
+后端配置见 `backend/.env.example`（复制为 `.env`，含 RPC_URL 与三个合约地址）。
 
-然后浏览器打开 **http://127.0.0.1:3001/pages/index.html**
-
-- 右上角「登录 / 注册」：用户名 + 密码即可，后端自动创建链上托管钱包。
-- 余额不足时下单会自动领取测试币。
-- 在「份额交易」提交买单，订单由托管钱包签名上链，成交后自动跳转个人中心，
-  持仓从链上 `balanceOf` 读取。
-
-## 仅浏览前端（不启动区块链）
-
-前端为纯静态页面，订单走浏览器本地存储：
-
-```bash
-cd realestate-nft-fraction
-npx serve .
-```
-
-或直接使用 GitHub Pages 在线链接。
-
-## 部署到 Polygon Amoy 测试网（可选）
-
-```bash
-cd realestate-nft-contracts
-cp .env.example .env   # 填入测试钱包 PRIVATE_KEY
-npm run deploy:amoy
-```
+## 主要 API
+- `POST /api/auth/register|login|logout`：注册 / 登录 / 退出
+- `GET  /api/me`：当前用户信息、ETH 余额、链上持仓
+- `POST /api/orders`：提交订单（买/卖/拆分/分红/赎回），后端签名上链
+- `GET  /api/orders`：订单流水
+- `GET  /api/orders/export`：导出订单 CSV
+- `GET  /api/health`：节点与合约状态
 
 ## 安全说明
-
-- 用户私钥以 keystore 形式加密保存在后端 `data/`（已 gitignore），密码不入库。
-- `backend/.env`、`contracts/.env`、`node_modules`、`data/db.json`、合约编译产物均不会提交。
-- 本地 Hardhat 账户私钥为公开测试密钥，请勿在主网使用。
+- 用户私钥以 keystore 形式用密码 AES 加密保存；持久化会话用服务器主密钥（`data/.masterkey`）AES-256-GCM 加密。
+- `.env`、`data/db.json`、`data/.masterkey`、`node_modules` 均已在 `.gitignore` 中，不会上传仓库。
+- 本项目为本地演示，合约部署在 Hardhat 本地网络，请勿在主网使用。

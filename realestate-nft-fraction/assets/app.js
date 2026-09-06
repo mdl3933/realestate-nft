@@ -68,7 +68,10 @@
   // ---------- 账户 ----------
   function user() { return LS.get('user', null); }
   function setUser(u) { LS.set('user', u); }
-  function logout() { LS.set('user', null); LS.set('token', null); location.reload(); }
+  function logout() {
+    try { if (API && getToken()) fetch(API + '/auth/logout', { method: 'POST', headers: { Authorization: 'Bearer ' + getToken() } }); } catch (e) { }
+    LS.set('user', null); LS.set('token', null); location.reload();
+  }
 
   function hash(str) {
     return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str)).then(function (buf) {
