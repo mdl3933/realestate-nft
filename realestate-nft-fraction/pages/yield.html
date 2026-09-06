@@ -726,9 +726,9 @@ input, select, textarea {
       <h1 class="ph-title">租金收益 <span class="gold-text">按份自动分配</span></h1>
       <p class="ph-sub">运营方将租金注入合约，智能合约按持有份额即时结算，一键领取到你的托管钱包。分红规则公开透明，持份即享收益权。</p>
       <div class="ph-chips">
-        <a class="ph-chip" href="./trade.html"><i></i>租金按份自动结算</a>
-        <a class="ph-chip" href="./profile.html"><i></i>一键领取到钱包</a>
-        <a class="ph-chip" href="./profile.html"><i></i>分红记录公开</a>
+        <a class="ph-chip" href="#yield-summary"><i></i>租金按份自动结算</a>
+        <a class="ph-chip" href="#claim-all"><i></i>一键领取到钱包</a>
+        <a class="ph-chip" href="#yield-history"><i></i>分红记录公开</a>
         <a class="ph-chip" href="./marketplace.html"><i></i>持份即收益权</a>
       </div>
     </div>
@@ -738,7 +738,7 @@ input, select, textarea {
   <main class="page">
     <div class="container">
 
-      <div class="yield-summary">
+      <div id="yield-summary" class="yield-summary">
         <div class="summary-card">
           <h3>待领取总收益</h3>
           <div class="amount">¥4,286.00</div>
@@ -796,7 +796,7 @@ input, select, textarea {
         </div>
       </div>
 
-      <h2 class="section-title" style="font-size:1.25rem;">租金分配历史</h2>
+      <h2 id="yield-history" class="section-title" style="font-size:1.25rem;">租金分配历史</h2>
       <div class="table-wrap">
         <table class="table">
           <thead>

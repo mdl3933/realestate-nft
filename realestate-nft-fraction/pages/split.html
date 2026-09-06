@@ -726,9 +726,9 @@ input, select, textarea {
       <h1 class="ph-title">一套房产，拆成 <span class="gold-text">1000 份</span> 权益</h1>
       <p class="ph-sub">实体房产铸造为 ERC-721 主 NFT 确权，再拆分为 ERC-1155 等额份额流通。资产由合约 1:1 托管，拆分与份额总量全程链上可查、不可超发。</p>
       <div class="ph-chips">
-        <a class="ph-chip" href="./marketplace.html"><i></i>ERC-721 主 NFT 确权</a>
-        <a class="ph-chip" href="./trade.html"><i></i>ERC-1155 等额份额</a>
-        <a class="ph-chip" href="./redeem.html"><i></i>资产 1:1 合约托管</a>
+        <a class="ph-chip" href="#split-form"><i></i>ERC-721 主 NFT 确权</a>
+        <a class="ph-chip" href="#split-form"><i></i>ERC-1155 等额份额</a>
+        <a class="ph-chip" href="#split-flow"><i></i>资产 1:1 合约托管</a>
         <a class="ph-chip" href="./profile.html"><i></i>拆分记录链上可查</a>
       </div>
     </div>
@@ -744,7 +744,7 @@ input, select, textarea {
       </div>
 
       <div class="split-layout">
-        <form class="form-card" onsubmit="event.preventDefault();">
+        <form id="split-form" class="form-card" onsubmit="event.preventDefault();">
           <div class="form-group">
             <label class="form-label" for="property-name">房产名称</label>
             <input class="form-input" id="property-name" type="text" placeholder="例如：虹桥轻奢别墅">
@@ -774,7 +774,7 @@ input, select, textarea {
           </div>
         </form>
 
-        <aside class="info-card">
+        <aside id="split-flow" class="info-card">
           <h3>拆分流程</h3>
           <ol>
             <li>填写房产基本信息与估值。</li>

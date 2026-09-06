@@ -233,3 +233,7 @@
 .hero-ticker .ph-ticker-track { animation-duration: 32s; }
 
 @media (max-width: 1100px) { .hero-floatcard { display: none; } }
+
+/* 页内锚点滚动：为固定导航栏留出偏移 */
+main [id] { scroll-margin-top: 96px; }
+html { scroll-behavior: smooth; }
