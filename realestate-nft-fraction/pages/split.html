@@ -746,6 +746,23 @@ input, select, textarea {
       <div class="split-layout">
         <form id="split-form" class="form-card" onsubmit="event.preventDefault();">
           <div class="form-group">
+            <label class="form-label" for="split-preset">选择待拆分房产</label>
+            <select class="form-input" id="split-preset">
+              <option value="villa" selected>虹桥轻奢别墅 · 上海长宁 · 3600 万 · 2000 份</option>
+              <option value="office">陆家嘴甲级写字楼 · 上海浦东 · 2500 万 · 2000 份</option>
+              <option value="apartment">徐汇精装公寓 · 上海徐汇 · 1200 万 · 2000 份</option>
+              <option value="loft">静安 Loft 公寓 · 上海静安 · 840 万 · 2000 份</option>
+              <option value="family">杭州家庭三居 · 浙江杭州 · 400 万 · 2000 份</option>
+              <option value="townhouse">嘉兴花园洋房 · 浙江嘉兴 · 300 万 · 2000 份</option>
+              <option value="shop">社区沿街旺铺 · 社区底商 · 240 万 · 2000 份</option>
+              <option value="tower">临港刚需高层 · 上海临港 · 160 万 · 2000 份</option>
+              <option value="cozy">花桥温馨小两居 · 江苏昆山 · 120 万 · 2000 份</option>
+              <option value="studio">苏州青年公寓 · 江苏苏州 · 100 万 · 2000 份</option>
+              <option value="__custom">✍️ 自定义新房产（手动填写）</option>
+            </select>
+            <p class="form-hint">选择已有房产将自动带出位置、估值、份额与元数据；也可选"自定义"手动录入。</p>
+          </div>
+          <div class="form-group">
             <label class="form-label" for="property-name">房产名称</label>
             <input class="form-input" id="property-name" type="text" placeholder="例如：虹桥轻奢别墅">
           </div>
@@ -842,6 +859,44 @@ input, select, textarea {
     .notice svg { flex-shrink: 0; width: 20px; height: 20px; }
     @media (max-width: 768px) { .split-layout { grid-template-columns: 1fr; } }
   </style>
+  <script>
+    (function () {
+      var PRESETS = {
+        villa:     { name: '虹桥轻奢别墅',     location: '上海市长宁区虹桥板块', value: 36000000, shares: 2000 },
+        office:    { name: '陆家嘴甲级写字楼', location: '上海市浦东新区陆家嘴', value: 25000000, shares: 2000 },
+        apartment: { name: '徐汇精装公寓',     location: '上海市徐汇区',         value: 12000000, shares: 2000 },
+        loft:      { name: '静安 Loft 公寓',   location: '上海市静安区',         value: 8400000,  shares: 2000 },
+        family:    { name: '杭州家庭三居',     location: '浙江杭州市余杭区',     value: 4000000,  shares: 2000 },
+        townhouse: { name: '嘉兴花园洋房',     location: '浙江嘉兴市南湖区',     value: 3000000,  shares: 2000 },
+        shop:      { name: '社区沿街旺铺',     location: '上海市浦东新区社区底商', value: 2400000, shares: 2000 },
+        tower:     { name: '临港刚需高层',     location: '上海临港新片区',       value: 1600000,  shares: 2000 },
+        cozy:      { name: '花桥温馨小两居',   location: '江苏昆山花桥镇',       value: 1200000,  shares: 2000 },
+        studio:    { name: '苏州青年公寓',     location: '江苏苏州市工业园区',   value: 1000000,  shares: 2000 }
+      };
+      var sel = document.getElementById('split-preset');
+      var ids = ['property-name', 'property-location', 'total-value', 'total-shares', 'metadata-uri'];
+      function f(id) { return document.getElementById(id); }
+      function applyPreset() {
+        var key = sel.value;
+        var custom = key === '__custom';
+        ids.forEach(function (id) { f(id).readOnly = !custom; });
+        if (custom) {
+          f('property-name').value = ''; f('property-location').value = '';
+          f('total-value').value = ''; f('total-shares').value = ''; f('metadata-uri').value = '';
+          f('property-name').focus();
+          return;
+        }
+        var p = PRESETS[key];
+        f('property-name').value = p.name;
+        f('property-location').value = p.location;
+        f('total-value').value = p.value;
+        f('total-shares').value = p.shares;
+        f('metadata-uri').value = 'ipfs://Qm' + key.padEnd(44, 'Estate') + '0000';
+      }
+      sel.addEventListener('change', applyPreset);
+      applyPreset();
+    })();
+  </script>
   <script src="../assets/app.js"></script>
   <script src="../assets/wallet-popup.js"></script>
 </body>

@@ -366,7 +366,8 @@
           if (!sp) return toast('请选择持仓', 'error');
           order = { type: 'sell', property: sp, propertyName: propName(sp), price: sprice, amount: samount, total: sprice * samount };
         } else if (page === 'split.html' || /拆分|铸造|发布/.test(btnText)) {
-          var fp = val('property') || val('split-property');
+          var preset = val('split-preset');
+          var fp = val('property') || val('split-property') || (preset && preset !== '__custom' ? preset : '');
           var famount = Number(val('fractions') || val('total-fractions') || val('total-shares') || val('amount') || 100);
           var totalVal = Number(val('total-value') || val('property-value') || 0);
           var fprice = Number(val('fraction-price') || val('price') || 0) || (famount && totalVal ? Math.round(totalVal / famount) : ((PROPERTIES[fp] && PROPERTIES[fp].price) || 0));
