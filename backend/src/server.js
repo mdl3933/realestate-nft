@@ -1,4 +1,4 @@
-/*
+﻿/*
  * ESTATE 后端服务
  * - 用户名 + 密码注册/登录，平台托管钱包（无需 MetaMask）
  * - 订单经托管钱包签名上链（Hardhat 本地节点）
@@ -151,6 +151,35 @@ app.get('/api/holdings', auth, async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// ---------- 分红查询 ----------
+app.get('/api/dividends', auth, async (req, res) => {
+  try {
+    const rec = db.users[req.username];
+    const info = await chain.chainInfo().catch(() => ({ ok: false }));
+    if (!info.ok) {
+      const hs = await chain.holdings(rec.address).catch(() => []);
+      const mock = hs.map((h) => ({
+        ...h,
+        pendingWei: '0',
+        pendingEth: '0.0',
+        note: '演示模式，暂无链上分红'
+      }));
+      return res.json({ dividends: mock, mode: 'offline' });
+    }
+    const list = await chain.dividends(rec.address);
+    res.json({ dividends: list, mode: 'chain' });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// 注入租金（运营方，演示分红用）
+app.post('/api/dividends/deposit/:propertyKey', auth, async (req, res) => {
+  try {
+    const info = await chain.chainInfo().catch(() => ({ ok: false }));
+    if (!info.ok) return res.status(503).json({ error: '未连接区块链节点' });
+    const result = await chain.depositRent(req.params.propertyKey, req.body.amountEth || '0.01');
+    res.json({ ok: true, txHash: result.txHash, note: result.note });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
 // ---------- 订单 ----------
 app.post('/api/orders', auth, async (req, res) => {
   const body = req.body || {};

@@ -1,0 +1,38 @@
+{
+  "generatedAt": "2026-09-06T08:20:28.249Z",
+  "ipfsNode": null,
+  "items": [
+    {
+      "tokenId": 0,
+      "key": "villa",
+      "name": "虹桥轻奢别墅",
+      "ipfsUri": null,
+      "dataUri": "data:application/json;base64,ewogICJuYW1lIjogIuiZueahpei9u+WlouWIq+WihSIsCiAgImRlc2NyaXB0aW9uIjogIlJXQSDmiL/kuqfliIbniYfmiYDmnInmnYPlh63or4Egwrcg5LiK5rW3wrfombnmoaUgwrcg5YWxIDEwMDAg5Lu9IiwKICAiaW1hZ2UiOiAiaXBmczovL2VzdGF0ZS92aWxsYS5wbmciLAogICJleHRlcm5hbF91cmwiOiAiaHR0cHM6Ly9tZGwzOTMzLmdpdGh1Yi5pby9yZWFsZXN0YXRlLW5mdC8iLAogICJhdHRyaWJ1dGVzIjogWwogICAgewogICAgICAidHJhaXRfdHlwZSI6ICLkvY3nva4iLAogICAgICAidmFsdWUiOiAi5LiK5rW3wrfombnmoaUiCiAgICB9LAogICAgewogICAgICAidHJhaXRfdHlwZSI6ICLlu7rnrZHpnaLnp68iLAogICAgICAidmFsdWUiOiAiMjY4446hIgogICAgfSwKICAgIHsKICAgICAgInRyYWl0X3R5cGUiOiAi5oi35Z6LIiwKICAgICAgInZhbHVlIjogIjXlrqQy5Y6FIgogICAgfSwKICAgIHsKICAgICAgInRyYWl0X3R5cGUiOiAi6K+E5Lyw5Lu3IiwKICAgICAgInZhbHVlIjogIiQxLDgwMCwwMDAiCiAgICB9LAogICAgewogICAgICAidHJhaXRfdHlwZSI6ICLmgLvku73pop0iLAogICAgICAidmFsdWUiOiAxMDAwCiAgICB9LAogICAgewogICAgICAidHJhaXRfdHlwZSI6ICLotYTkuqfnsbvliKsiLAogICAgICAidmFsdWUiOiAiUmVhbCBFc3RhdGUgKFJXQSkiCiAgICB9CiAgXQp9",
+      "local": "assets/ipfs/villa.json"
+    },
+    {
+      "tokenId": 1,
+      "key": "loft",
+      "name": "静安 Loft 公寓",
+      "ipfsUri": null,
+      "dataUri": "data:application/json;base64,ewogICJuYW1lIjogIumdmeWuiSBMb2Z0IOWFrOWvkyIsCiAgImRlc2NyaXB0aW9uIjogIlJXQSDmiL/kuqfliIbniYfmiYDmnInmnYPlh63or4Egwrcg5LiK5rW3wrfpnZnlrokgwrcg5YWxIDEwMDAg5Lu9IiwKICAiaW1hZ2UiOiAiaXBmczovL2VzdGF0ZS9sb2Z0LnBuZyIsCiAgImV4dGVybmFsX3VybCI6ICJodHRwczovL21kbDM5MzMuZ2l0aHViLmlvL3JlYWxlc3RhdGUtbmZ0LyIsCiAgImF0dHJpYnV0ZXMiOiBbCiAgICB7CiAgICAgICJ0cmFpdF90eXBlIjogIuS9jee9riIsCiAgICAgICJ2YWx1ZSI6ICLkuIrmtbfCt+mdmeWuiSIKICAgIH0sCiAgICB7CiAgICAgICJ0cmFpdF90eXBlIjogIuW7uuetkemdouenryIsCiAgICAgICJ2YWx1ZSI6ICI5NuOOoSIKICAgIH0sCiAgICB7CiAgICAgICJ0cmFpdF90eXBlIjogIuaIt+WeiyIsCiAgICAgICJ2YWx1ZSI6ICIy5a6kMeWOhSIKICAgIH0sCiAgICB7CiAgICAgICJ0cmFpdF90eXBlIjogIuivhOS8sOS7tyIsCiAgICAgICJ2YWx1ZSI6ICIkNTIwLDAwMCIKICAgIH0sCiAgICB7CiAgICAgICJ0cmFpdF90eXBlIjogIuaAu+S7veminSIsCiAgICAgICJ2YWx1ZSI6IDEwMDAKICAgIH0sCiAgICB7CiAgICAgICJ0cmFpdF90eXBlIjogIui1hOS6p+exu+WIqyIsCiAgICAgICJ2YWx1ZSI6ICJSZWFsIEVzdGF0ZSAoUldBKSIKICAgIH0KICBdCn0=",
+      "local": "assets/ipfs/loft.json"
+    },
+    {
+      "tokenId": 2,
+      "key": "office",
+      "name": "陆家嘴甲级写字楼",
+      "ipfsUri": null,
+      "dataUri": "data:application/json;base64,ewogICJuYW1lIjogIumZhuWutuWYtOeUsue6p+WGmeWtl+alvCIsCiAgImRlc2NyaXB0aW9uIjogIlJXQSDmiL/kuqfliIbniYfmiYDmnInmnYPlh63or4Egwrcg5LiK5rW3wrfpmYblrrblmLQgwrcg5YWxIDEwMDAg5Lu9IiwKICAiaW1hZ2UiOiAiaXBmczovL2VzdGF0ZS9vZmZpY2UucG5nIiwKICAiZXh0ZXJuYWxfdXJsIjogImh0dHBzOi8vbWRsMzkzMy5naXRodWIuaW8vcmVhbGVzdGF0ZS1uZnQvIiwKICAiYXR0cmlidXRlcyI6IFsKICAgIHsKICAgICAgInRyYWl0X3R5cGUiOiAi5L2N572uIiwKICAgICAgInZhbHVlIjogIuS4iua1t8K36ZmG5a625Zi0IgogICAgfSwKICAgIHsKICAgICAgInRyYWl0X3R5cGUiOiAi5bu6562R6Z2i56evIiwKICAgICAgInZhbHVlIjogIjQyMOOOoSIKICAgIH0sCiAgICB7CiAgICAgICJ0cmFpdF90eXBlIjogIuaIt+WeiyIsCiAgICAgICJ2YWx1ZSI6ICLnlLLnuqflip7lhawiCiAgICB9LAogICAgewogICAgICAidHJhaXRfdHlwZSI6ICLor4TkvLDku7ciLAogICAgICAidmFsdWUiOiAiJDMsNjAwLDAwMCIKICAgIH0sCiAgICB7CiAgICAgICJ0cmFpdF90eXBlIjogIuaAu+S7veminSIsCiAgICAgICJ2YWx1ZSI6IDEwMDAKICAgIH0sCiAgICB7CiAgICAgICJ0cmFpdF90eXBlIjogIui1hOS6p+exu+WIqyIsCiAgICAgICJ2YWx1ZSI6ICJSZWFsIEVzdGF0ZSAoUldBKSIKICAgIH0KICBdCn0=",
+      "local": "assets/ipfs/office.json"
+    },
+    {
+      "tokenId": 3,
+      "key": "apartment",
+      "name": "徐汇精装公寓",
+      "ipfsUri": null,
+      "dataUri": "data:application/json;base64,ewogICJuYW1lIjogIuW+kOaxh+eyvuijheWFrOWvkyIsCiAgImRlc2NyaXB0aW9uIjogIlJXQSDmiL/kuqfliIbniYfmiYDmnInmnYPlh63or4Egwrcg5LiK5rW3wrflvpDmsYcgwrcg5YWxIDEwMDAg5Lu9IiwKICAiaW1hZ2UiOiAiaXBmczovL2VzdGF0ZS9hcGFydG1lbnQucG5nIiwKICAiZXh0ZXJuYWxfdXJsIjogImh0dHBzOi8vbWRsMzkzMy5naXRodWIuaW8vcmVhbGVzdGF0ZS1uZnQvIiwKICAiYXR0cmlidXRlcyI6IFsKICAgIHsKICAgICAgInRyYWl0X3R5cGUiOiAi5L2N572uIiwKICAgICAgInZhbHVlIjogIuS4iua1t8K35b6Q5rGHIgogICAgfSwKICAgIHsKICAgICAgInRyYWl0X3R5cGUiOiAi5bu6562R6Z2i56evIiwKICAgICAgInZhbHVlIjogIjg4446hIgogICAgfSwKICAgIHsKICAgICAgInRyYWl0X3R5cGUiOiAi5oi35Z6LIiwKICAgICAgInZhbHVlIjogIjPlrqQx5Y6FIgogICAgfSwKICAgIHsKICAgICAgInRyYWl0X3R5cGUiOiAi6K+E5Lyw5Lu3IiwKICAgICAgInZhbHVlIjogIiQ2MjAsMDAwIgogICAgfSwKICAgIHsKICAgICAgInRyYWl0X3R5cGUiOiAi5oC75Lu96aKdIiwKICAgICAgInZhbHVlIjogMTAwMAogICAgfSwKICAgIHsKICAgICAgInRyYWl0X3R5cGUiOiAi6LWE5Lqn57G75YirIiwKICAgICAgInZhbHVlIjogIlJlYWwgRXN0YXRlIChSV0EpIgogICAgfQogIF0KfQ==",
+      "local": "assets/ipfs/apartment.json"
+    }
+  ]
+}

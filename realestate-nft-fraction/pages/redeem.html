@@ -883,5 +883,190 @@ input, select, textarea {
   </style>
   <script src="../assets/app.js"></script>
   <script src="../assets/wallet-popup.js"></script>
+
+  <script>
+  // ============================================================
+  // 赎回合并页 — 动态读取持仓与总份额，判断是否可赎回
+  // ============================================================
+  (function () {
+    var propImgs = {
+      villa: '../assets/property-villa.jpg',
+      loft: '../assets/property-loft.jpg',
+      office: '../assets/property-office.jpg',
+      apartment: '../assets/property-apartment.jpg',
+      tower: '../assets/property-tower.jpg',
+      cozy: '../assets/property-cozy.jpg',
+      shop: '../assets/property-shop.jpg',
+      family: '../assets/property-family.jpg',
+      studio: '../assets/property-studio.jpg',
+      townhouse: '../assets/property-townhouse.jpg'
+    };
+
+    function getToken() {
+      try { return localStorage.getItem('estate_token'); } catch (e) { return null; }
+    }
+
+    var redeemData = [];
+
+    function populateForm(list) {
+      var select = document.getElementById('redeem-property');
+      var amount = document.getElementById('redeem-amount');
+      var hint = document.getElementById('threshold-hint');
+      if (!select) return;
+      redeemData = list || [];
+      select.innerHTML = '<option value="">请选择</option>';
+      for (var i = 0; i < redeemData.length; i++) {
+        var p = redeemData[i];
+        var opt = document.createElement('option');
+        opt.value = p.key;
+        opt.textContent = p.name;
+        opt.setAttribute('data-threshold', p.totalShares || 1000);
+        opt.setAttribute('data-shares', p.shares || 0);
+        opt.setAttribute('data-name', p.name);
+        select.appendChild(opt);
+      }
+      function updateHint() {
+        var opt = select.options[select.selectedIndex];
+        if (!opt || !opt.value) {
+          if (hint) hint.textContent = '选择房产后将显示所需份额阈值。';
+          if (amount) amount.value = '';
+          return;
+        }
+        var total = Number(opt.getAttribute('data-threshold') || 1000);
+        var shares = Number(opt.getAttribute('data-shares') || 0);
+        if (hint) {
+          hint.innerHTML = '该房产赎回阈值：<strong>' + total.toLocaleString('zh-CN') + '</strong> 份。您当前持有 <strong>' + shares + '</strong> 份。';
+        }
+        if (amount) amount.value = total;
+      }
+      select.removeEventListener('change', updateHint);
+      select.addEventListener('change', updateHint);
+      updateHint();
+    }
+
+    function bindFormSubmit() {
+      var form = document.getElementById('redeem-form');
+      if (!form || form.getAttribute('data-bound')) return;
+      form.setAttribute('data-bound', '1');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var select = document.getElementById('redeem-property');
+        var opt = select.options[select.selectedIndex];
+        if (!opt || !opt.value) {
+          alert('请选择要赎回的房产');
+          return;
+        }
+        var key = opt.value;
+        var name = opt.getAttribute('data-name');
+        var total = Number(opt.getAttribute('data-threshold') || 1000);
+        var shares = Number(opt.getAttribute('data-shares') || 0);
+        if (shares < total) {
+          alert('持仓不足，无法赎回（需要 ' + total + ' 份，当前 ' + shares + ' 份）');
+          return;
+        }
+        if (window.ESTATE && window.ESTATE.submitOrder) {
+          window.ESTATE.submitOrder({ type: 'redeem', property: key, propertyName: name, amount: 1 }, function () {
+            setTimeout(loadRedeemData, 800);
+          });
+        } else {
+          alert('请先连接钱包');
+        }
+      });
+    }
+
+    function replaceThreshold(list) {
+      var card = document.getElementById('redeem-threshold');
+      if (!card) return;
+      var html = '<h3>我的赎回进度</h3>';
+      var hasAny = false;
+      for (var i = 0; i < list.length; i++) {
+        var p = list[i];
+        if (p.shares <= 0) continue;
+        hasAny = true;
+        var total = p.totalShares || 1000;
+        var pct = Math.min(100, Math.round(p.shares / total * 100));
+        var canRedeem = p.shares >= total;
+        html += '<div class="threshold-row" style="margin-bottom:12px;">' +
+          '<span style="font-weight:500;">' + p.name + '</span>' +
+          '<span>' + p.shares + ' / ' + total + ' 份</span>' +
+        '</div>';
+        html += '<div style="height:6px;background:var(--estate-neutral-200);border-radius:999px;margin-bottom:16px;overflow:hidden;">' +
+          '<div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,var(--estate-primary-400),var(--estate-primary-600));border-radius:999px;"></div>' +
+        '</div>';
+        if (canRedeem) {
+          html += '<button class="btn btn-sm btn-primary redeem-btn" data-key="' + p.key + '" data-name="' + p.name + '" style="width:100%;margin-bottom:16px;">立即赎回 ' + p.name + '</button>';
+        }
+      }
+      if (!hasAny) {
+        html += '<p style="color:var(--estate-muted-foreground);font-size:0.9rem;margin:0;">暂无持仓，去 <a href="./marketplace.html">市场认购</a> 买入份额吧～</p>';
+      }
+      card.innerHTML = html;
+
+      var btns = card.querySelectorAll('.redeem-btn');
+      for (var j = 0; j < btns.length; j++) {
+        btns[j].addEventListener('click', function (e) {
+          var key = e.currentTarget.getAttribute('data-key');
+          var name = e.currentTarget.getAttribute('data-name');
+          if (window.ESTATE && window.ESTATE.submitOrder) {
+            window.ESTATE.submitOrder({
+              type: 'redeem',
+              property: key,
+              propertyName: name,
+              amount: 1
+            }, function () {
+              setTimeout(loadRedeemData, 800);
+            });
+          } else {
+            alert('请先连接钱包');
+          }
+        });
+      }
+    }
+
+    function loadRedeemData() {
+      var token = getToken();
+      var card = document.getElementById('redeem-threshold');
+      if (!token) {
+        if (card) card.innerHTML = '<h3>赎回进度</h3><p style="color:var(--estate-muted-foreground);font-size:0.9rem;margin:0;">请先 <button class="btn btn-sm btn-outline" id="redeem-login-btn" type="button">连接钱包</button> 查看持仓</p>';
+        var lb = document.getElementById('redeem-login-btn');
+        if (lb) lb.addEventListener('click', function () { document.getElementById('wallet-btn').click(); });
+        return;
+      }
+
+      if (card) card.innerHTML = '<h3>赎回进度</h3><p style="color:var(--estate-muted-foreground);font-size:0.9rem;margin:0;">加载中…</p>';
+
+      fetch('/api/dividends', {
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data.error) throw new Error(data.error);
+          populateForm(data.dividends || []);
+          replaceThreshold(data.dividends || []);
+          bindFormSubmit();
+        })
+        .catch(function (e) {
+          if (card) card.innerHTML = '<h3>赎回进度</h3><p style="color:var(--state-error);font-size:0.9rem;margin:0;">加载失败：' + e.message + '</p>';
+        });
+    }
+
+    function init() {
+      loadRedeemData();
+      setInterval(function () {
+        var token = getToken();
+        var card = document.getElementById('redeem-threshold');
+        if (token && card && card.textContent.indexOf('连接钱包') >= 0) {
+          loadRedeemData();
+        }
+      }, 2000);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+  </script>
 </body>
 </html>

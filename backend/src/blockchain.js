@@ -1,4 +1,4 @@
-/*
+﻿/*
  * 区块链交互层（ethers v6）
  * - 后端托管用户钱包（keystore 加密），无需 MetaMask
  * - 通过 Hardhat 本地节点(http://127.0.0.1:8545) 读写 EstateNFT / FractionToken / EstateMarket
@@ -35,6 +35,7 @@ const ABI = {
     'function getSellOrder(uint256 orderId) view returns (address seller, uint256 tokenId, uint256 amount, uint256 pricePerShare, bool active)',
     'function getSellOrderCount() view returns (uint256)',
     'function getPendingDividend(address user, uint256 tokenId) view returns (uint256)'
+    'function totalFractions(uint256 tokenId) view returns (uint256)'
   ]
 };
 
@@ -69,10 +70,16 @@ async function init() {
 
 function propMeta(propertyKey) {
   const byKey = (config.properties || []).find((p) => p.key === propertyKey);
-  if (byKey) return byKey;
+  if (byKey) return _ensureWei(byKey);
   const idx = ['villa', 'loft', 'office', 'apartment'].indexOf(propertyKey);
-  if (idx >= 0 && config.properties[idx]) return config.properties[idx];
-  return config.properties[0] || { tokenId: 0, orderId: 0, priceWei: ethers.parseEther('0.001').toString() };
+  if (idx >= 0 && config.properties[idx]) return _ensureWei(config.properties[idx]);
+  return _ensureWei(config.properties[0] || { tokenId: 0, orderId: 0, priceEth: '0.001' });
+}
+function _ensureWei(p) {
+  if (!p.priceWei && p.priceEth) {
+    p.priceWei = ethers.parseEther(p.priceEth).toString();
+  }
+  return p;
 }
 
 async function chainInfo() {
@@ -122,6 +129,26 @@ async function holdings(addr) {
   for (const p of config.properties || []) {
     const bal = await ft.balanceOf(addr, p.tokenId);
     out.push({ key: p.key, name: p.name, tokenId: p.tokenId, shares: Number(bal), priceEth: p.priceEth });
+  }
+  return out;
+}
+
+// 查询所有房产的待领取分红（wei），同时返回持仓份额
+async function dividends(addr) {
+  const out = [];
+  for (const p of config.properties || []) {
+    const bal = await ft.balanceOf(addr, p.tokenId);
+    const pending = await market.getPendingDividend(addr, p.tokenId).catch(() => 0n);
+    out.push({
+      key: p.key,
+      name: p.name,
+      tokenId: p.tokenId,
+      shares: Number(bal),
+      priceEth: p.priceEth,
+      pendingWei: pending.toString(),
+      pendingEth: ethers.formatEther(pending),
+      totalShares: Number(await market.totalFractions(p.tokenId).catch(() => 0n))
+    });
   }
   return out;
 }
@@ -178,4 +205,13 @@ async function executeOrder(order, signer) {
   throw new Error('未知订单类型: ' + order.type);
 }
 
-module.exports = { init, chainInfo, createWallet, encryptWallet, unlockSigner, signerFromKey, balance, holdings, executeOrder, ethers };
+// 运营方注入租金（用于演示分红）
+async function depositRent(propertyKey, amountEth) {
+  const meta = propMeta(propertyKey);
+  const amount = ethers.parseEther(amountEth || '0.01');
+  const tx = await market.connect(admin).depositRent(meta.tokenId, { value: amount });
+  const r = await tx.wait();
+  return { txHash: r.transactionHash, note: '链上注入租金 ' + amountEth + ' ETH（' + meta.name + '）' };
+}
+
+module.exports = { init, chainInfo, createWallet, encryptWallet, unlockSigner, signerFromKey, balance, holdings, dividends, executeOrder, depositRent, ethers };

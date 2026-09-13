@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN" class="light">
 <head>
     <meta charset="UTF-8">
@@ -898,5 +898,235 @@ input, select, textarea {
   </style>
   <script src="../assets/app.js"></script>
   <script src="../assets/wallet-popup.js"></script>
-</body>
+
+  <script>
+  // ============================================================
+  // 收益领取页 — 动态从链上读取持仓与待领取分红
+  // 取代页面原有的静态示例数据
+  // ============================================================
+  (function () {
+    // 房产图片映射
+    var propImgs = {
+      villa: '../assets/property-villa.jpg',
+      loft: '../assets/property-loft.jpg',
+      office: '../assets/property-office.jpg',
+      apartment: '../assets/property-apartment.jpg',
+      tower: '../assets/property-tower.jpg',
+      cozy: '../assets/property-cozy.jpg',
+      shop: '../assets/property-shop.jpg',
+      family: '../assets/property-family.jpg',
+      studio: '../assets/property-studio.jpg',
+      townhouse: '../assets/property-townhouse.jpg'
+    };
+
+    function getToken() {
+      try { return localStorage.getItem('estate_token'); } catch (e) { return null; }
+    }
+
+    function fmtEth(weiStr) {
+      var wei = BigInt(weiStr || '0');
+      var eth = Number(wei) / 1e18;
+      return eth.toFixed(6);
+    }
+
+    // 改造顶部三张统计卡
+    function replaceSummary() {
+      var summary = document.getElementById('yield-summary');
+      if (!summary) return;
+      summary.innerHTML =
+        '<div class="summary-card">' +
+          '<h3>待领取总收益（ETH）</h3>' +
+          '<div class="amount" id="total-pending">0.000000</div>' +
+        '</div>' +
+        '<div class="summary-card">' +
+          '<h3>持有房产数</h3>' +
+          '<div class="amount" id="hold-count">0</div>' +
+        '</div>' +
+        '<div class="summary-card">' +
+          '<h3>链上状态</h3>' +
+          '<div class="amount" id="chain-status" style="font-size:1.1rem;">检测中…</div>' +
+        '</div>';
+    }
+
+    // 改造持仓收益列表为动态容器
+    function replaceHoldingList() {
+      var cards = document.querySelectorAll('.card');
+      var targetCard = null;
+      for (var i = 0; i < cards.length; i++) {
+        var h2 = cards[i].querySelector('h2');
+        if (h2 && h2.textContent.indexOf('我的持仓收益') >= 0) {
+          targetCard = cards[i];
+          break;
+        }
+      }
+      if (!targetCard) return;
+      var body = targetCard.querySelector('.card-body');
+      body.innerHTML =
+        '<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: var(--estate-s-4);">' +
+          '<h2 style="font-size:1.15rem; margin:0;">我的持仓收益</h2>' +
+          '<button class="btn btn-sm btn-ghost" id="refresh-dividends" type="button">刷新</button>' +
+        '</div>' +
+        '<div id="dividend-list"><div class="empty-state">加载中…</div></div>';
+    }
+
+    function render(list) {
+      var holdings = list.filter(function (d) { return d.shares > 0; });
+      var totalWei = 0n;
+      for (var i = 0; i < list.length; i++) {
+        totalWei += BigInt(list[i].pendingWei || '0');
+      }
+      document.getElementById('total-pending').textContent = fmtEth(totalWei.toString());
+      document.getElementById('hold-count').textContent = holdings.length;
+
+      var listEl = document.getElementById('dividend-list');
+      if (!listEl) return;
+
+      if (holdings.length === 0) {
+        listEl.innerHTML = '<div class="empty-state">暂无持仓，去 <a href="./marketplace.html">市场认购</a> 买几份试试～</div>';
+        var claimAllBtn = document.getElementById('claim-all');
+        if (claimAllBtn) claimAllBtn.disabled = true;
+        return;
+      }
+
+      var html = '';
+      for (var j = 0; j < holdings.length; j++) {
+        var h = holdings[j];
+        var img = propImgs[h.key] || '../assets/property-apartment.jpg';
+        var pending = Number(h.pendingEth || 0);
+        var canClaim = pending > 0;
+        html += '<div class="holding-row" data-key="' + h.key + '">' +
+          '<div class="holding-info">' +
+            '<img src="' + img + '" alt="' + h.name + '">' +
+            '<div>' +
+              '<div class="name">' + h.name + '</div>' +
+              '<div class="shares">持有 ' + h.shares + ' 份</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="claim-amount">+ ' + pending.toFixed(6) + ' ETH</div>' +
+          '<button class="btn btn-sm ' + (canClaim ? 'btn-outline' : 'btn-ghost') + ' claim-one" type="button" data-key="' + h.key + '" ' + (canClaim ? '' : 'disabled') + '>' +
+            (canClaim ? '领取' : '暂无分红') +
+          '</button>' +
+        '</div>';
+      }
+      listEl.innerHTML = html;
+
+      var btns = listEl.querySelectorAll('.claim-one');
+      for (var k = 0; k < btns.length; k++) {
+        btns[k].addEventListener('click', function (e) {
+          var key = e.currentTarget.getAttribute('data-key');
+          claimOne(key);
+        });
+      }
+      var claimAllBtn = document.getElementById('claim-all');
+      if (claimAllBtn) claimAllBtn.disabled = Number(totalWei) === 0;
+    }
+
+    function loadDividends() {
+      var listEl = document.getElementById('dividend-list');
+      var statusEl = document.getElementById('chain-status');
+      if (listEl) listEl.innerHTML = '<div class="empty-state">加载中…</div>';
+      if (statusEl) { statusEl.textContent = '加载中…'; statusEl.style.color = ''; }
+
+      var token = getToken();
+      if (!token) {
+        if (statusEl) { statusEl.textContent = '未登录'; statusEl.style.color = 'var(--state-error)'; }
+        if (listEl) listEl.innerHTML = '<div class="empty-state">请先 <button class="btn btn-sm btn-outline" id="yield-login-btn" type="button">连接钱包</button></div>';
+        var loginBtn = document.getElementById('yield-login-btn');
+        if (loginBtn) loginBtn.addEventListener('click', function () {
+          document.getElementById('wallet-btn').click();
+        });
+        var claimAllBtn = document.getElementById('claim-all');
+        if (claimAllBtn) claimAllBtn.disabled = true;
+        return;
+      }
+
+      fetch('/api/dividends', {
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data.error) throw new Error(data.error);
+          if (statusEl) {
+            statusEl.textContent = data.mode === 'chain' ? '链上已连接' : '演示模式';
+            statusEl.style.color = data.mode === 'chain' ? 'var(--state-success)' : 'var(--state-warning)';
+          }
+          render(data.dividends || []);
+        })
+        .catch(function (e) {
+          if (statusEl) { statusEl.textContent = '加载失败'; statusEl.style.color = 'var(--state-error)'; }
+          if (listEl) listEl.innerHTML = '<div class="empty-state">加载失败：' + e.message + '</div>';
+        });
+    }
+
+    function claimOne(propertyKey) {
+      var token = getToken();
+      if (!token) {
+        alert('请先连接钱包');
+        return;
+      }
+      var claimAllBtn = document.getElementById('claim-all');
+      if (claimAllBtn) claimAllBtn.disabled = true;
+
+      // 通过钱包弹窗走标准下单流程（type=claim）
+      if (window.ESTATE && window.ESTATE.submitOrder) {
+        window.ESTATE.submitOrder({
+          type: 'claim',
+          property: propertyKey,
+          amount: 1
+        }, function () {
+          setTimeout(loadDividends, 800);
+        });
+      } else {
+        // 兜底：直接调 API
+        fetch('/api/orders', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ type: 'claim', property: propertyKey, amount: 1 })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (data.error) alert(data.error);
+            else alert('领取成功！tx: ' + (data.txHash || '').slice(0, 18) + '…');
+            setTimeout(loadDividends, 800);
+          })
+          .catch(function (e) { alert('领取失败：' + e.message); });
+      }
+    }
+
+    function init() {
+      replaceSummary();
+      replaceHoldingList();
+
+      var claimAllBtn = document.getElementById('claim-all');
+      if (claimAllBtn) {
+        claimAllBtn.addEventListener('click', function () {
+          alert('请逐套领取，或在"个人中心"查看所有分红记录。');
+        });
+      }
+
+      var refreshBtn = document.getElementById('refresh-dividends');
+      if (refreshBtn) refreshBtn.addEventListener('click', loadDividends);
+
+      loadDividends();
+
+      // 监听登录状态变化（钱包弹窗登录后刷新）
+      setInterval(function () {
+        var token = getToken();
+        var statusEl = document.getElementById('chain-status');
+        if (token && statusEl && statusEl.textContent === '未登录') {
+          loadDividends();
+        }
+      }, 2000);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+  </script></body>
 </html>
