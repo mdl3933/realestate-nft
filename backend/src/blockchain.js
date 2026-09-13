@@ -1,4 +1,4 @@
-﻿/*
+/*
  * 区块链交互层（ethers v6）
  * - 后端托管用户钱包（keystore 加密），无需 MetaMask
  * - 通过 Hardhat 本地节点(http://127.0.0.1:8545) 读写 EstateNFT / FractionToken / EstateMarket
@@ -34,7 +34,7 @@ const ABI = {
     'function redeem(uint256 tokenId)',
     'function getSellOrder(uint256 orderId) view returns (address seller, uint256 tokenId, uint256 amount, uint256 pricePerShare, bool active)',
     'function getSellOrderCount() view returns (uint256)',
-    'function getPendingDividend(address user, uint256 tokenId) view returns (uint256)'
+    'function getPendingDividend(address user, uint256 tokenId) view returns (uint256)',
     'function totalFractions(uint256 tokenId) view returns (uint256)'
   ]
 };
