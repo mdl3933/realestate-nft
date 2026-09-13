@@ -5,7 +5,7 @@
 
 ## 在线预览
 - 首页：https://mdl3933.github.io/realestate-nft/
-- 份额交易页：https://mdl3933.github.io/realestate-nft/realestate-nft-fraction/pages/trade.html
+- 份额交易页：https://mdl3933.github.io/realestate-nft/trade.html
 
 > 在线 GitHub Pages 为纯静态演示：注册登录、下单、订单记录与跳转、CSV 导出均可用，数据保存在浏览器本地（localStorage）。
 > 真实链上交易在本地运行后端 + Hardhat 节点时生效。
