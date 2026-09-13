@@ -1,0 +1,214 @@
+/* ============================================================
+   ESTATE RWA — 浅淡明亮 · 高级浅色主题（功能内容区）
+   在 cover.css 之后加载。封面（.page-hero / .hero-cover）保持
+   深色电影感，内容区转为暖象牙底 + 白色悬浮卡片 + 鎏金点缀，
+   形成「深色封面 → 明亮清新内容」的反差冲击。
+   仅覆盖外观令牌与组件样式，不改结构 / 交互 / class 名。
+   ============================================================ */
+
+:root {
+  /* 暖象牙底色阶（比默认更明亮通透） */
+  --estate-neutral-0: #ffffff;   /* 卡片面 */
+  --estate-neutral-50: #f8f5ef;  /* 页面底 */
+  --estate-neutral-100: #f3eee5; /* 抬升面 / 间隔区 */
+  --estate-neutral-150: #efe9de; /* 输入框底 */
+  --estate-neutral-200: #e9e1d4; /* 描边 */
+
+  /* 语义令牌 */
+  --estate-background: #f7f3ec;
+  --estate-card: #ffffff;
+  --estate-border: #ece4d7;
+  --estate-input: #ffffff;
+
+  /* 更柔、更暖、带浮起感的阴影 */
+  --estate-shadow-1: 0 1px 2px rgba(120, 92, 52, 0.05), 0 6px 18px -10px rgba(120, 92, 52, 0.12);
+  --estate-shadow-2: 0 16px 40px -18px rgba(120, 92, 52, 0.22), 0 0 0 1px rgba(184, 149, 107, 0.06);
+  --estate-shadow-3: 0 30px 70px -28px rgba(120, 92, 52, 0.28);
+}
+
+/* ---------- 基础：暖象牙底 + 柔和金色晨光 ---------- */
+html,
+body {
+  background-color: #f7f3ec;
+  color: var(--estate-neutral-900);
+}
+body {
+  background-image:
+    radial-gradient(920px 480px at 86% -12%, rgba(222, 182, 138, 0.22), transparent 60%),
+    radial-gradient(760px 440px at -4% 2%, rgba(204, 148, 93, 0.14), transparent 55%),
+    radial-gradient(700px 500px at 50% 118%, rgba(222, 182, 138, 0.12), transparent 60%);
+  background-attachment: fixed;
+}
+::selection { background: rgba(184, 149, 107, 0.28); color: #4a3a22; }
+
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: #f7f3ec; }
+::-webkit-scrollbar-thumb { background: #d9cdb8; border-radius: 8px; border: 2px solid #f7f3ec; }
+::-webkit-scrollbar-thumb:hover { background: #c3b294; }
+
+/* ---------- 导航：浅色毛玻璃 ---------- */
+.navbar {
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(184, 149, 107, 0.2);
+}
+.logo {
+  background: linear-gradient(100deg, #b8895a, #8a6b48 55%, #a67c45);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.nav-links a { color: #4f4b47; }
+.nav-links a:hover,
+.nav-links a[aria-current="page"] {
+  background-color: rgba(184, 149, 107, 0.14);
+  color: #8a6b48;
+}
+.wallet-btn {
+  border-color: transparent;
+  background: linear-gradient(120deg, #d3a06a, #b8895a);
+  color: #fff;
+  box-shadow: 0 10px 22px -10px rgba(184, 149, 107, 0.7);
+}
+.wallet-btn:hover { background: linear-gradient(120deg, #dcae7c, #c09466); border-color: transparent; }
+.menu-toggle { color: #4f4b47; }
+@media (max-width: 768px) {
+  .nav-links {
+    background-color: rgba(255, 255, 255, 0.96);
+    border-bottom: 1px solid rgba(184, 149, 107, 0.2);
+  }
+}
+
+/* ---------- 页脚：浅暖象牙 ---------- */
+.footer {
+  background-color: #f1ebe0;
+  border-top: 1px solid rgba(184, 149, 107, 0.22);
+}
+.footer-links a { color: #6b6560; }
+.footer-links a:hover { color: #8a6b48; }
+.copyright { color: #a39a8d; }
+
+/* ---------- 标题 / 文案 ---------- */
+.section-title { color: #2a2520; }
+.section-subtitle { color: #8a837a; }
+.divider { background-color: rgba(184, 149, 107, 0.2); }
+
+/* ---------- 卡片：白色悬浮 + 鎏金悬停 ---------- */
+.card,
+.trade-card,
+.summary-card,
+.form-card,
+.filter-bar {
+  background-color: #ffffff;
+  border: 1px solid #eee6d9;
+  box-shadow: var(--estate-shadow-1);
+}
+.card {
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(184, 149, 107, 0.5);
+  box-shadow: 0 22px 48px -20px rgba(150, 110, 60, 0.35), 0 0 0 1px rgba(184, 149, 107, 0.12);
+}
+.card-media { border-bottom: 1px solid #f0e9dc; }
+
+.feature-icon {
+  background: linear-gradient(150deg, rgba(212, 176, 128, 0.22), rgba(212, 176, 128, 0.08));
+  border: 1px solid rgba(184, 149, 107, 0.32);
+  color: #a67c45;
+}
+
+/* 浅色信息卡（拆分 / 赎回页） */
+.info-card,
+.threshold-card {
+  background: linear-gradient(180deg, #fdfaf4, #f8f1e4);
+  border: 1px solid #ecd9bd;
+}
+.info-card h3,
+.threshold-card h3 { color: #8a6b48; }
+.threshold-row { border-bottom-color: #f0e2cc; }
+.progress-list li { border-left-color: #ecd9bd; }
+.progress-list li::before {
+  background: linear-gradient(135deg, #deb68a, #b8895a);
+  color: #fff;
+  box-shadow: 0 6px 14px -4px rgba(184, 149, 107, 0.6);
+}
+
+/* ---------- 按钮 ---------- */
+.btn-primary {
+  background: linear-gradient(120deg, #d3a06a, #b8895a);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 12px 26px -12px rgba(184, 149, 107, 0.75);
+}
+.btn-primary:hover { background: linear-gradient(120deg, #dcae7c, #c09466); border-color: transparent; }
+.btn-neutral {
+  background-color: #fff;
+  color: #363330;
+  border-color: #e3dbd0;
+}
+.btn-neutral:hover { background-color: #faf6ef; }
+.btn-outline {
+  color: #a67c45;
+  border-color: rgba(184, 149, 107, 0.55);
+  background-color: rgba(184, 149, 107, 0.05);
+}
+.btn-outline:hover { background-color: rgba(184, 149, 107, 0.13); }
+.btn-ghost { color: #4f4b47; }
+.btn-ghost:hover { background-color: rgba(184, 149, 107, 0.12); }
+
+/* ---------- 表单 ---------- */
+.form-label { color: #4f4b47; }
+.form-input,
+.form-select,
+.form-textarea {
+  background-color: #fff;
+  border-color: #e3dbd0;
+  color: #1a1714;
+}
+.form-input::placeholder,
+.form-textarea::placeholder { color: #b3ab9f; }
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: #c39d6a;
+  box-shadow: 0 0 0 3px rgba(184, 149, 107, 0.2);
+}
+.form-select option { background-color: #fff; color: #1a1714; }
+.form-hint { color: #8a837a; }
+.filter-group label { color: #8a837a; }
+
+/* ---------- 表格 ---------- */
+.table-wrap {
+  background-color: #fff;
+  border: 1px solid #eee6d9;
+  box-shadow: var(--estate-shadow-1);
+}
+.table th {
+  background: linear-gradient(180deg, #fdfaf4, #f6eedd);
+  color: #8a6b48;
+  border-bottom: 1px solid #ecd9bd;
+}
+.table th,
+.table td { border-bottom-color: #f1e9db; }
+.table tbody tr:hover { background-color: rgba(184, 149, 107, 0.07); }
+
+/* ---------- 徽章 / 状态（浅色语义色） ---------- */
+.badge-success { background-color: var(--state-success-bg); color: var(--state-success); }
+.badge-warning { background-color: var(--state-warning-bg); color: var(--state-warning); }
+.badge-info { background-color: var(--state-info-bg); color: var(--state-info); }
+.order-row.buy,
+.claim-amount { color: var(--state-success); }
+.order-row.sell { color: var(--state-error); }
+
+/* 金额 / 价格用鎏金深色，保证浅底上清晰 */
+.summary-card .amount,
+.price { color: #a67c45; }
+
+/* 个人中心 */
+.avatar { color: #fff; }
+.wallet-address {
+  background-color: rgba(184, 149, 107, 0.1);
+  border: 1px solid rgba(184, 149, 107, 0.22);
+  color: #6b5a42;
+}
