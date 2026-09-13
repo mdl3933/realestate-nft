@@ -1,0 +1,32 @@
+{
+  "name": "陆家嘴甲级写字楼",
+  "description": "RWA 房产分片所有权凭证 · 上海·陆家嘴 · 共 1000 份",
+  "image": "ipfs://estate/office.png",
+  "external_url": "https://mdl3933.github.io/realestate-nft/",
+  "attributes": [
+    {
+      "trait_type": "位置",
+      "value": "上海·陆家嘴"
+    },
+    {
+      "trait_type": "建筑面积",
+      "value": "420㎡"
+    },
+    {
+      "trait_type": "户型",
+      "value": "甲级办公"
+    },
+    {
+      "trait_type": "评估价",
+      "value": "$3,600,000"
+    },
+    {
+      "trait_type": "总份额",
+      "value": 1000
+    },
+    {
+      "trait_type": "资产类别",
+      "value": "Real Estate (RWA)"
+    }
+  ]
+}
