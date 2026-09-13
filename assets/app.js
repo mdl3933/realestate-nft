@@ -460,11 +460,22 @@
 
   // ---------- 启动 ----------
   function boot() {
+    var readyResolve;
+    window.ESTATE = {
+      user: user,
+      logout: logout,
+      openAuth: openAuth,
+      submitOrder: submitOrder,
+      exportOrders: exportOrders,
+      API: function () { return API; },
+      PROPERTIES: PROPERTIES,
+      ready: new Promise(function (resolve) { readyResolve = resolve; })
+    };
     detectBackend().then(function () {
       hijackWalletBtn();
       hookForms();
       if (location.pathname.indexOf('profile.html') !== -1) renderProfile();
-      window.ESTATE = { user: user, logout: logout, openAuth: openAuth, submitOrder: submitOrder, exportOrders: exportOrders, API: function () { return API; }, PROPERTIES: PROPERTIES };
+      readyResolve(API);
     });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
