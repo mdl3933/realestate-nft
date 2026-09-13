@@ -1035,19 +1035,26 @@ input, select, textarea {
 
       if (card) card.innerHTML = '<h3>赎回进度</h3><p style="color:var(--estate-muted-foreground);font-size:0.9rem;margin:0;">加载中…</p>';
 
-      fetch('/api/dividends', {
-        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
-      })
-        .then(function (r) { return r.json(); })
-        .then(function (data) {
-          if (data.error) throw new Error(data.error);
-          populateForm(data.dividends || []);
-          replaceThreshold(data.dividends || []);
-          bindFormSubmit();
+      (window.ESTATE && window.ESTATE.ready || Promise.resolve(null)).then(function (apiBase) {
+        if (!apiBase) {
+          if (card) card.innerHTML = '<h3>赎回进度</h3><p style="color:var(--estate-muted-foreground);font-size:0.9rem;margin:0;">演示模式：后端未启动，暂无实时数据</p>';
+          return;
+        }
+
+        fetch(apiBase + '/dividends', {
+          headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
         })
-        .catch(function (e) {
-          if (card) card.innerHTML = '<h3>赎回进度</h3><p style="color:var(--state-error);font-size:0.9rem;margin:0;">加载失败：' + e.message + '</p>';
-        });
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (data.error) throw new Error(data.error);
+            populateForm(data.dividends || []);
+            replaceThreshold(data.dividends || []);
+            bindFormSubmit();
+          })
+          .catch(function (e) {
+            if (card) card.innerHTML = '<h3>赎回进度</h3><p style="color:var(--state-error);font-size:0.9rem;margin:0;">加载失败：' + e.message + '</p>';
+          });
+      });
     }
 
     function init() {
