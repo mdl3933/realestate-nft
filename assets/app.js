@@ -45,9 +45,12 @@
   var API = null;
   function detectBackend() {
     var i = 0;
+    var isHttps = location.protocol === 'https:';
     function next() {
       if (i >= API_CANDIDATES.length) { API = null; return Promise.resolve(null); }
       var base = API_CANDIDATES[i++];
+      // HTTPS 页面无法调用 HTTP 本地后端（浏览器禁止混合内容）
+      if (isHttps && base.indexOf('http://') === 0) return next();
       var ctrl = new AbortController();
       var to = setTimeout(function () { ctrl.abort(); }, 1500);
       return fetch(base + '/health', { signal: ctrl.signal })
