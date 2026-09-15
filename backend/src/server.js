@@ -1,4 +1,4 @@
-﻿/*
+/*
  * ESTATE 后端服务
  * - 用户名 + 密码注册/登录，平台托管钱包（无需 MetaMask）
  * - 订单经托管钱包签名上链（Hardhat 本地节点）
@@ -13,7 +13,17 @@ const chain = require('./blockchain');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-app.use(cors());
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    const allowedOrigins = ['http://127.0.0.1:3001', 'http://localhost:3001', 'https://mdl3933.github.io'];
+    if (allowedOrigins.includes(origin) || origin.endsWith('.github.io')) {
+      return callback(null, true);
+    }
+    callback(new Error('Not allowed by CORS: ' + origin));
+  },
+  credentials: true
+}));
 app.use(express.json({ limit: '1mb' }));
 
 // ---------- 数据存储（JSON 文件，无需原生数据库）----------
