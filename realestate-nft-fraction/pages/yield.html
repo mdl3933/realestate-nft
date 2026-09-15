@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN" class="light">
 <head>
     <meta charset="UTF-8">
@@ -1040,22 +1040,32 @@ input, select, textarea {
         return;
       }
 
-      fetch('/api/dividends', {
-        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
-      })
-        .then(function (r) { return r.json(); })
-        .then(function (data) {
-          if (data.error) throw new Error(data.error);
-          if (statusEl) {
-            statusEl.textContent = data.mode === 'chain' ? '链上已连接' : '演示模式';
-            statusEl.style.color = data.mode === 'chain' ? 'var(--state-success)' : 'var(--state-warning)';
-          }
-          render(data.dividends || []);
+      (window.ESTATE && window.ESTATE.ready || Promise.resolve(null)).then(function (apiBase) {
+        if (!apiBase) {
+          if (statusEl) { statusEl.textContent = '演示模式'; statusEl.style.color = 'var(--state-warning)'; }
+          if (listEl) listEl.innerHTML = '<div class="empty-state">演示模式：后端未启动，暂无实时数据</div>';
+          var claimAllBtn = document.getElementById('claim-all');
+          if (claimAllBtn) claimAllBtn.disabled = true;
+          return;
+        }
+
+        fetch(apiBase + '/dividends', {
+          headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
         })
-        .catch(function (e) {
-          if (statusEl) { statusEl.textContent = '加载失败'; statusEl.style.color = 'var(--state-error)'; }
-          if (listEl) listEl.innerHTML = '<div class="empty-state">加载失败：' + e.message + '</div>';
-        });
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (data.error) throw new Error(data.error);
+            if (statusEl) {
+              statusEl.textContent = data.mode === 'chain' ? '链上已连接' : '演示模式';
+              statusEl.style.color = data.mode === 'chain' ? 'var(--state-success)' : 'var(--state-warning)';
+            }
+            render(data.dividends || []);
+          })
+          .catch(function (e) {
+            if (statusEl) { statusEl.textContent = '加载失败'; statusEl.style.color = 'var(--state-error)'; }
+            if (listEl) listEl.innerHTML = '<div class="empty-state">加载失败：' + e.message + '</div>';
+          });
+      });
     }
 
     function claimOne(propertyKey) {
@@ -1078,21 +1088,24 @@ input, select, textarea {
         });
       } else {
         // 兜底：直接调 API
-        fetch('/api/orders', {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + token,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ type: 'claim', property: propertyKey, amount: 1 })
-        })
-          .then(function (r) { return r.json(); })
-          .then(function (data) {
-            if (data.error) alert(data.error);
-            else alert('领取成功！tx: ' + (data.txHash || '').slice(0, 18) + '…');
-            setTimeout(loadDividends, 800);
+        (window.ESTATE && window.ESTATE.ready || Promise.resolve(null)).then(function (apiBase) {
+          if (!apiBase) { alert('演示模式：后端未启动，无法领取'); return; }
+          fetch(apiBase + '/orders', {
+            method: 'POST',
+            headers: {
+              'Authorization': 'Bearer ' + token,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ type: 'claim', property: propertyKey, amount: 1 })
           })
-          .catch(function (e) { alert('领取失败：' + e.message); });
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+              if (data.error) alert(data.error);
+              else alert('领取成功！tx: ' + (data.txHash || '').slice(0, 18) + '…');
+              setTimeout(loadDividends, 800);
+            })
+            .catch(function (e) { alert('领取失败：' + e.message); });
+        });
       }
     }
 
