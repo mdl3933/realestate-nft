@@ -287,6 +287,20 @@ app.get('/api/orders/export', (req, res) => {
 // ---------- 托管前端静态页面 ----------
 const frontendDir = path.join(__dirname, '..', '..', 'realestate-nft-fraction');
 app.use(express.static(frontendDir));
+
+// 便捷路由：访问 /xxx.html 时若根目录不存在，则自动对应 pages/xxx.html
+// 这样用户直接打开 http://127.0.0.1:3001/yield.html 也能正常显示
+app.use((req, res, next) => {
+  if (req.method !== 'GET') return next();
+  const m = req.path.match(/^\/([^/]+\.html)$/);
+  if (!m) return next();
+  const rootFile = path.join(frontendDir, m[1]);
+  if (fs.existsSync(rootFile)) return next();
+  const pagesFile = path.join(frontendDir, 'pages', m[1]);
+  if (fs.existsSync(pagesFile)) return res.sendFile(pagesFile);
+  next();
+});
+
 app.get('/', (req, res) => res.redirect('/pages/index.html'));
 
 // ---------- 启动 ----------
