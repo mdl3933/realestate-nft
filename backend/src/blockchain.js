@@ -114,10 +114,20 @@ async function balance(addr) {
   return ethers.formatEther(await provider.getBalance(addr));
 }
 
+// 内存 nonce 管理器：解决 Hardhat automining 下 getTransactionCount 与链上状态竞态问题
+const nonceMap = new Map();
+async function nextNonce(addr) {
+  const chainNonce = await provider.getTransactionCount(addr, 'pending');
+  const localNonce = nonceMap.get(addr) || 0;
+  const n = Math.max(chainNonce, localNonce);
+  nonceMap.set(addr, n + 1);
+  return n;
+}
+
 async function ensureFunds(addr) {
   const bal = await provider.getBalance(addr);
   if (bal < ethers.parseEther('0.02')) {
-    const tx = await admin.sendTransaction({ to: addr, value: ethers.parseEther(FAUCET_ETH) });
+    const tx = await admin.sendTransaction({ to: addr, value: ethers.parseEther(FAUCET_ETH), nonce: await nextNonce(admin.address) });
     await tx.wait();
     return true;
   }
@@ -155,51 +165,77 @@ async function dividends(addr) {
 
 // 执行订单（返回 txHash）
 async function executeOrder(order, signer) {
+  // 每次执行重新创建 signer，避免 ethers 钱包 nonce 缓存与链上实际 nonce 不一致
+  signer = new ethers.Wallet(signer.privateKey, provider);
   const meta = propMeta(order.property);
   const amount = Math.max(1, Number(order.amount || 1));
   const userAddr = signer.address;
   await ensureFunds(userAddr);
 
   if (order.type === 'buy') {
-    const value = BigInt(meta.priceWei) * BigInt(amount);
-    const tx = await market.connect(signer).buyShares(meta.orderId, amount, { value });
+    const targetOrderId = order.orderId != null ? Number(order.orderId) : meta.orderId;
+    const targetMeta = targetOrderId === meta.orderId ? meta : await market.getSellOrder(targetOrderId);
+    const priceWei = targetMeta.pricePerShare ? targetMeta.pricePerShare.toString() : meta.priceWei;
+    const value = BigInt(priceWei) * BigInt(amount);
+    const tx = await market.connect(signer).buyShares(targetOrderId, amount, { value, nonce: await nextNonce(userAddr) });
     const r = await tx.wait();
-    return { txHash: r.transactionHash, note: '链上买入 ' + amount + ' 份 ' + meta.name };
+    return { txHash: r.hash, note: '链上买入 ' + amount + ' 份 ' + meta.name };
   }
 
   if (order.type === 'sell') {
     const approved = await ft.isApprovedForAll(userAddr, await market.getAddress());
-    if (!approved) await (await ft.connect(signer).setApprovalForAll(await market.getAddress(), true)).wait();
-    const tx = await market.connect(signer).createSellOrder(meta.tokenId, amount, BigInt(meta.priceWei));
+    if (!approved) {
+      const tx1 = await ft.connect(signer).setApprovalForAll(await market.getAddress(), true, { nonce: await nextNonce(userAddr) });
+      await tx1.wait();
+    }
+    const orderId = Number(await market.getSellOrderCount());
+    const tx = await market.connect(signer).createSellOrder(meta.tokenId, amount, BigInt(meta.priceWei), { nonce: await nextNonce(userAddr) });
     const r = await tx.wait();
-    return { txHash: r.transactionHash, note: '链上挂卖单 ' + amount + ' 份 ' + meta.name };
+    return { txHash: r.hash, orderId, note: '链上挂卖单 ' + amount + ' 份 ' + meta.name + '（orderId ' + orderId + '）' };
   }
 
   if (order.type === 'split') {
-    const uri = 'ipfs://estate/' + (meta.key || order.property) + '.json';
+    const uri = 'ipfs://estate/' + (order.property || 'new') + '.json';
     const tokenId = await nft.connect(signer).mintProperty.staticCall(userAddr, uri);
-    await (await nft.connect(signer).mintProperty(userAddr, uri)).wait();
+    const tx1 = await nft.connect(signer).mintProperty(userAddr, uri, { nonce: await nextNonce(userAddr) });
+    await tx1.wait();
     const approved = await nft.isApprovedForAll(userAddr, await market.getAddress());
-    if (!approved) await (await nft.connect(signer).setApprovalForAll(await market.getAddress(), true)).wait();
-    const tx = await market.connect(signer).fractionalize(tokenId, amount);
+    if (!approved) {
+      const tx2 = await nft.connect(signer).setApprovalForAll(await market.getAddress(), true, { nonce: await nextNonce(userAddr) });
+      await tx2.wait();
+    }
+    const tx = await market.connect(signer).fractionalize(tokenId, amount, { nonce: await nextNonce(userAddr) });
     const r = await tx.wait();
-    return { txHash: r.transactionHash, note: '链上铸造并拆分 ' + amount + ' 份（tokenId ' + tokenId + '）' };
+    // 将新房产加入内存配置，使后续买卖/赎回/分红可按 key 查找
+    config.properties = config.properties || [];
+    if (!config.properties.find((p) => p.tokenId === Number(tokenId))) {
+      config.properties.push({
+        key: order.property || ('token' + tokenId),
+        name: order.propertyName || order.property || ('房产 #' + tokenId),
+        tokenId: Number(tokenId),
+        orderId: null,
+        shares: amount,
+        priceEth: order.price ? String(order.price) : '0.001'
+      });
+    }
+    return { txHash: r.hash, note: '链上铸造并拆分 ' + amount + ' 份（tokenId ' + tokenId + '）' };
   }
 
   if (order.type === 'claim') {
     // 运营方先注入租金，再由用户领取
-    await (await market.connect(admin).depositRent(meta.tokenId, { value: ethers.parseEther('0.01') })).wait();
+    const dtx = await market.connect(admin).depositRent(meta.tokenId, { value: ethers.parseEther('0.01'), nonce: await nextNonce(admin.address) });
+    await dtx.wait();
     const pending = await market.getPendingDividend(userAddr, meta.tokenId);
     if (pending === 0n) throw new Error('该房产暂无可领取分红（需先持有份额）');
-    const tx = await market.connect(signer).claimDividend(meta.tokenId);
+    const tx = await market.connect(signer).claimDividend(meta.tokenId, { nonce: await nextNonce(userAddr) });
     const r = await tx.wait();
-    return { txHash: r.transactionHash, note: '链上领取 ' + meta.name + ' 租金分红' };
+    return { txHash: r.hash, note: '链上领取 ' + meta.name + ' 租金分红' };
   }
 
   if (order.type === 'redeem') {
-    const tx = await market.connect(signer).redeem(meta.tokenId);
+    const tx = await market.connect(signer).redeem(meta.tokenId, { nonce: await nextNonce(userAddr) });
     const r = await tx.wait();
-    return { txHash: r.transactionHash, note: '链上赎回合并 ' + meta.name };
+    return { txHash: r.hash, note: '链上赎回合并 ' + meta.name };
   }
 
   throw new Error('未知订单类型: ' + order.type);
@@ -211,7 +247,7 @@ async function depositRent(propertyKey, amountEth) {
   const amount = ethers.parseEther(amountEth || '0.01');
   const tx = await market.connect(admin).depositRent(meta.tokenId, { value: amount });
   const r = await tx.wait();
-  return { txHash: r.transactionHash, note: '链上注入租金 ' + amountEth + ' ETH（' + meta.name + '）' };
+  return { txHash: r.hash, note: '链上注入租金 ' + amountEth + ' ETH（' + meta.name + '）' };
 }
 
 module.exports = { init, chainInfo, createWallet, encryptWallet, unlockSigner, signerFromKey, balance, holdings, dividends, executeOrder, depositRent, ethers };

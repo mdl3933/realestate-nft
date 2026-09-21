@@ -201,6 +201,7 @@ app.post('/api/orders', auth, async (req, res) => {
     type: body.type,
     property: body.property,
     propertyName: body.propertyName,
+    orderId: body.orderId,
     price: body.price || 0,
     amount: body.amount || 1,
     total: body.total || 0,
@@ -213,6 +214,7 @@ app.post('/api/orders', auth, async (req, res) => {
     try {
       const result = await chain.executeOrder(order, req.signer);
       order.tx = result.txHash;
+      if (result.orderId != null) order.orderId = result.orderId;
       order.status = 'filled';
       order.note = result.note;
     } catch (e) {
@@ -230,7 +232,7 @@ app.post('/api/orders', auth, async (req, res) => {
   }
   db.orders.unshift(order);
   saveDB(db);
-  res.json({ id: order.id, status: order.status, txHash: order.tx, address: rec.address, error: order.error, note: order.note });
+  res.json({ id: order.id, status: order.status, txHash: order.tx, orderId: order.orderId, address: rec.address, error: order.error, note: order.note });
 });
 
 // ---------- 退出登录：清除内存会话与持久化会话 ----------
