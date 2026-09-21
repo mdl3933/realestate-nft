@@ -323,6 +323,11 @@ input, select, textarea {
   border-color: var(--estate-primary-600);
 }
 
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .btn-neutral {
   background-color: var(--estate-neutral-100);
   color: var(--estate-neutral-800);
@@ -744,12 +749,12 @@ input, select, textarea {
           <div class="amount">¥4,286.00</div>
         </div>
         <div class="summary-card">
-          <h3>本月已领取</h3>
-          <div class="amount">¥1,120.00</div>
+          <h3>持有房产数</h3>
+          <div class="amount">0</div>
         </div>
         <div class="summary-card">
-          <h3>累计收益</h3>
-          <div class="amount">¥18,942.00</div>
+          <h3>链上状态</h3>
+          <div class="amount">检测中…</div>
         </div>
       </div>
 
@@ -760,43 +765,14 @@ input, select, textarea {
       <div class="card" style="margin-bottom: var(--estate-s-6);">
         <div class="card-body">
           <h2 style="font-size:1.15rem; margin:0 0 var(--estate-s-4);">我的持仓收益</h2>
-          <div class="holding-row">
-            <div class="holding-info">
-              <img src="../assets/property-villa.jpg" alt="虹桥轻奢别墅">
-              <div>
-                <div class="name">虹桥轻奢别墅</div>
-                <div class="shares">持有 50 份</div>
-              </div>
-            </div>
-            <div class="claim-amount">+ ¥2,450.00</div>
-            <button class="btn btn-sm btn-outline" type="button">领取</button>
-          </div>
-          <div class="holding-row">
-            <div class="holding-info">
-              <img src="../assets/property-loft.jpg" alt="静安 Loft 公寓">
-              <div>
-                <div class="name">静安 Loft 公寓</div>
-                <div class="shares">持有 120 份</div>
-              </div>
-            </div>
-            <div class="claim-amount">+ ¥1,008.00</div>
-            <button class="btn btn-sm btn-outline" type="button">领取</button>
-          </div>
-          <div class="holding-row">
-            <div class="holding-info">
-              <img src="../assets/property-apartment.jpg" alt="徐汇精装公寓">
-              <div>
-                <div class="name">徐汇精装公寓</div>
-                <div class="shares">持有 30 份</div>
-              </div>
-            </div>
-            <div class="claim-amount">+ ¥828.00</div>
-            <button class="btn btn-sm btn-outline" type="button">领取</button>
-          </div>
+          <div id="dividend-list"><div class="empty-state">加载中…</div></div>
         </div>
       </div>
 
-      <h2 id="yield-history" class="section-title" style="font-size:1.25rem;">租金分配历史</h2>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: var(--estate-s-4);">
+        <h2 id="yield-history" class="section-title" style="font-size:1.25rem; margin:0;">租金分配历史</h2>
+        <button class="btn btn-sm btn-outline" id="export-yield" type="button">导出 CSV</button>
+      </div>
       <div class="table-wrap">
         <table class="table">
           <thead>
@@ -808,35 +784,8 @@ input, select, textarea {
               <th>状态</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>2026-08-01</td>
-              <td>虹桥轻奢别墅</td>
-              <td>月度租金</td>
-              <td class="tabular">+ ¥2,450.00</td>
-              <td><span class="badge badge-success">已领取</span></td>
-            </tr>
-            <tr>
-              <td>2026-08-01</td>
-              <td>静安 Loft 公寓</td>
-              <td>月度租金</td>
-              <td class="tabular">+ ¥1,008.00</td>
-              <td><span class="badge badge-warning">待领取</span></td>
-            </tr>
-            <tr>
-              <td>2026-07-01</td>
-              <td>徐汇精装公寓</td>
-              <td>月度租金</td>
-              <td class="tabular">+ ¥828.00</td>
-              <td><span class="badge badge-success">已领取</span></td>
-            </tr>
-            <tr>
-              <td>2026-07-01</td>
-              <td>陆家嘴甲级写字楼</td>
-              <td>季度租金</td>
-              <td class="tabular">+ ¥3,600.00</td>
-              <td><span class="badge badge-success">已领取</span></td>
-            </tr>
+          <tbody id="yield-history-body">
+            <tr><td colspan="5" class="empty-state" style="padding:40px;">加载中…</td></tr>
           </tbody>
         </table>
       </div>
@@ -864,21 +813,6 @@ input, select, textarea {
         const open = navLinks.classList.toggle('is-open');
         menuToggle.setAttribute('aria-expanded', String(open));
       });
-
-      const walletBtn = document.getElementById('wallet-btn');
-      walletBtn.addEventListener('click', () => {
-        const label = walletBtn.querySelector('span');
-        if (label.textContent.includes('连接')) {
-          label.textContent = '0x71C…9A3e';
-          walletBtn.classList.remove('btn-primary');
-          walletBtn.classList.add('btn-neutral');
-        } else {
-          label.textContent = '连接钱包';
-          walletBtn.classList.add('btn-primary');
-          walletBtn.classList.remove('btn-neutral');
-        }
-      });
-
     })();
   </script>
 
@@ -901,11 +835,9 @@ input, select, textarea {
 
   <script>
   // ============================================================
-  // 收益领取页 — 动态从链上读取持仓与待领取分红
-  // 取代页面原有的静态示例数据
+  // 收益领取页 — 支持本地后端真实数据 + 演示模式本地数据
   // ============================================================
   (function () {
-    // 房产图片映射
     var propImgs = {
       villa: '../assets/property-villa.jpg',
       loft: '../assets/property-loft.jpg',
@@ -919,17 +851,78 @@ input, select, textarea {
       townhouse: '../assets/property-townhouse.jpg'
     };
 
-    function getToken() {
-      try { return localStorage.getItem('estate_token'); } catch (e) { return null; }
+    var propNames = {
+      villa: '虹桥轻奢别墅', loft: '静安 Loft 公寓', office: '陆家嘴甲级写字楼',
+      apartment: '徐汇精装公寓', tower: '临港刚需高层', cozy: '花桥温馨小两居',
+      shop: '社区沿街旺铺', family: '杭州家庭三居', studio: '苏州青年公寓',
+      townhouse: '嘉兴花园洋房'
+    };
+
+    // 演示数据：默认展示的收益数据
+    var DEMO_DIVIDENDS = [
+      { key: 'villa', name: '虹桥轻奢别墅', shares: 50, pendingEth: 0.245, pendingWei: '245000000000000000', totalShares: 1000 },
+      { key: 'loft', name: '静安 Loft 公寓', shares: 120, pendingEth: 0.1008, pendingWei: '100800000000000000', totalShares: 1000 },
+      { key: 'apartment', name: '徐汇精装公寓', shares: 30, pendingEth: 0.0828, pendingWei: '82800000000000000', totalShares: 1000 }
+    ];
+
+    var DEMO_HISTORY = [
+      { date: '2026-08-01', property: '虹桥轻奢别墅', type: '月度租金', amount: 0.245, status: '待领取' },
+      { date: '2026-08-01', property: '静安 Loft 公寓', type: '月度租金', amount: 0.1008, status: '待领取' },
+      { date: '2026-08-01', property: '徐汇精装公寓', type: '月度租金', amount: 0.0828, status: '待领取' },
+      { date: '2026-07-01', property: '虹桥轻奢别墅', type: '月度租金', amount: 0.22, status: '已领取' },
+      { date: '2026-07-01', property: '陆家嘴甲级写字楼', type: '季度租金', amount: 0.36, status: '已领取' }
+    ];
+
+    var currentData = { dividends: [], history: [], mode: 'demo' };
+
+    function LS(k, d) { try { var v = localStorage.getItem('estate_' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+
+    function fmtEth(wei) {
+      var n = Number(wei || 0);
+      if (String(wei).length > 10 && String(wei).indexOf('e') === -1) n = Number(wei) / 1e18;
+      return n.toFixed(6);
     }
 
-    function fmtEth(weiStr) {
-      var wei = BigInt(weiStr || '0');
-      var eth = Number(wei) / 1e18;
-      return eth.toFixed(6);
+    function getLocalHoldings() {
+      var h = LS('holdings', {});
+      var list = [];
+      for (var k in h) {
+        if (h[k] && h[k].shares > 0) {
+          list.push({ key: k, name: h[k].name || propNames[k] || k, shares: h[k].shares, totalShares: 1000 });
+        }
+      }
+      return list;
     }
 
-    // 改造顶部三张统计卡
+    function getLocalClaims() {
+      return LS('claims', []);
+    }
+
+    function mergeDemoWithLocal() {
+      var localHoldings = getLocalHoldings();
+      var map = {};
+      // 先放演示数据
+      for (var i = 0; i < DEMO_DIVIDENDS.length; i++) { map[DEMO_DIVIDENDS[i].key] = Object.assign({}, DEMO_DIVIDENDS[i]); }
+      // 用本地持仓覆盖/补充
+      for (var j = 0; j < localHoldings.length; j++) {
+        var lh = localHoldings[j];
+        if (map[lh.key]) {
+          map[lh.key].shares = lh.shares;
+          map[lh.key].pendingEth = (lh.shares / 1000) * 4.9;
+          map[lh.key].pendingWei = String(Math.round(map[lh.key].pendingEth * 1e18));
+        } else {
+          map[lh.key] = {
+            key: lh.key, name: lh.name, shares: lh.shares, totalShares: 1000,
+            pendingEth: (lh.shares / 1000) * 4.9,
+            pendingWei: String(Math.round((lh.shares / 1000) * 4.9 * 1e18))
+          };
+        }
+      }
+      var list = [];
+      for (var k in map) list.push(map[k]);
+      return list;
+    }
+
     function replaceSummary() {
       var summary = document.getElementById('yield-summary');
       if (!summary) return;
@@ -948,7 +941,6 @@ input, select, textarea {
         '</div>';
     }
 
-    // 改造持仓收益列表为动态容器
     function replaceHoldingList() {
       var cards = document.querySelectorAll('.card');
       var targetCard = null;
@@ -969,14 +961,48 @@ input, select, textarea {
         '<div id="dividend-list"><div class="empty-state">加载中…</div></div>';
     }
 
-    function render(list) {
-      var holdings = list.filter(function (d) { return d.shares > 0; });
-      var totalWei = 0n;
-      for (var i = 0; i < list.length; i++) {
-        totalWei += BigInt(list[i].pendingWei || '0');
+    function renderHistory(list) {
+      var tbody = document.getElementById('yield-history-body');
+      if (!tbody) return;
+      if (!list || !list.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state" style="padding:40px;">暂无分红记录</td></tr>';
+        return;
       }
-      document.getElementById('total-pending').textContent = fmtEth(totalWei.toString());
-      document.getElementById('hold-count').textContent = holdings.length;
+      var html = '';
+      for (var i = 0; i < list.length; i++) {
+        var h = list[i];
+        var statusClass = h.status === '已领取' ? 'badge-success' : 'badge-warning';
+        html += '<tr>' +
+          '<td>' + h.date + '</td>' +
+          '<td>' + h.property + '</td>' +
+          '<td>' + h.type + '</td>' +
+          '<td class="tabular">+ ' + Number(h.amount).toFixed(6) + ' ETH</td>' +
+          '<td><span class="badge ' + statusClass + '">' + h.status + '</span></td>' +
+        '</tr>';
+      }
+      tbody.innerHTML = html;
+    }
+
+    function render(list, history, mode) {
+      currentData.dividends = list || [];
+      currentData.history = history || [];
+      currentData.mode = mode || 'demo';
+
+      var holdings = list.filter(function (d) { return d.shares > 0; });
+      var totalWei = 0;
+      for (var i = 0; i < list.length; i++) {
+        totalWei += Number(list[i].pendingEth || 0);
+      }
+      var totalEl = document.getElementById('total-pending');
+      if (totalEl) totalEl.textContent = totalWei.toFixed(6);
+      var holdEl = document.getElementById('hold-count');
+      if (holdEl) holdEl.textContent = holdings.length;
+
+      var statusEl = document.getElementById('chain-status');
+      if (statusEl) {
+        if (mode === 'chain') { statusEl.textContent = '链上已连接'; statusEl.style.color = 'var(--state-success)'; }
+        else { statusEl.textContent = '演示模式'; statusEl.style.color = 'var(--state-warning)'; }
+      }
 
       var listEl = document.getElementById('dividend-list');
       if (!listEl) return;
@@ -985,6 +1011,7 @@ input, select, textarea {
         listEl.innerHTML = '<div class="empty-state">暂无持仓，去 <a href="./marketplace.html">市场认购</a> 买几份试试～</div>';
         var claimAllBtn = document.getElementById('claim-all');
         if (claimAllBtn) claimAllBtn.disabled = true;
+        renderHistory(history);
         return;
       }
 
@@ -1018,36 +1045,44 @@ input, select, textarea {
         });
       }
       var claimAllBtn = document.getElementById('claim-all');
-      if (claimAllBtn) claimAllBtn.disabled = Number(totalWei) === 0;
+      if (claimAllBtn) claimAllBtn.disabled = totalWei <= 0;
+
+      renderHistory(history);
+    }
+
+    function buildHistoryFromClaims() {
+      var claims = getLocalClaims();
+      var hist = [];
+      for (var i = 0; i < claims.length; i++) {
+        var c = claims[i];
+        var d = new Date(c.time || c.createdAt || Date.now());
+        hist.push({
+          date: d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'),
+          property: c.propertyName || propNames[c.property] || c.property,
+          type: '月度租金',
+          amount: Number(c.amount || 0) / 1e18 || 0.05,
+          status: '已领取'
+        });
+      }
+      return hist;
     }
 
     function loadDividends() {
       var listEl = document.getElementById('dividend-list');
       var statusEl = document.getElementById('chain-status');
-      if (listEl) listEl.innerHTML = '<div class="empty-state">加载中…</div>';
       if (statusEl) { statusEl.textContent = '加载中…'; statusEl.style.color = ''; }
 
-      var token = getToken();
-      if (!token) {
-        if (statusEl) { statusEl.textContent = '未登录'; statusEl.style.color = 'var(--state-error)'; }
-        if (listEl) listEl.innerHTML = '<div class="empty-state">请先 <button class="btn btn-sm btn-outline" id="yield-login-btn" type="button">连接钱包</button></div>';
-        var loginBtn = document.getElementById('yield-login-btn');
-        if (loginBtn) loginBtn.addEventListener('click', function () {
-          document.getElementById('wallet-btn').click();
-        });
-        var claimAllBtn = document.getElementById('claim-all');
-        if (claimAllBtn) claimAllBtn.disabled = true;
-        return;
-      }
+      // 1. 先渲染演示数据，保证页面不空白
+      var demoList = mergeDemoWithLocal();
+      var demoHistory = DEMO_HISTORY.concat(buildHistoryFromClaims());
+      render(demoList, demoHistory, 'demo');
 
+      // 2. 尝试获取真实数据
       (window.ESTATE && window.ESTATE.ready || Promise.resolve(null)).then(function (apiBase) {
-        if (!apiBase) {
-          if (statusEl) { statusEl.textContent = '演示模式'; statusEl.style.color = 'var(--state-warning)'; }
-          if (listEl) listEl.innerHTML = '<div class="empty-state">演示模式：后端未启动，暂无实时数据</div>';
-          var claimAllBtn = document.getElementById('claim-all');
-          if (claimAllBtn) claimAllBtn.disabled = true;
-          return;
-        }
+        if (!apiBase) return; // 无后端，保持演示数据
+        var token = null;
+        try { token = localStorage.getItem('estate_token'); } catch (e) {}
+        if (!token) return; // 未登录，保持演示数据
 
         fetch(apiBase + '/dividends', {
           headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
@@ -1055,58 +1090,70 @@ input, select, textarea {
           .then(function (r) { return r.json(); })
           .then(function (data) {
             if (data.error) throw new Error(data.error);
-            if (statusEl) {
-              statusEl.textContent = data.mode === 'chain' ? '链上已连接' : '演示模式';
-              statusEl.style.color = data.mode === 'chain' ? 'var(--state-success)' : 'var(--state-warning)';
-            }
-            render(data.dividends || []);
+            render(data.dividends || [], data.history || DEMO_HISTORY, data.mode || 'chain');
           })
           .catch(function (e) {
-            if (statusEl) { statusEl.textContent = '加载失败'; statusEl.style.color = 'var(--state-error)'; }
-            if (listEl) listEl.innerHTML = '<div class="empty-state">加载失败：' + e.message + '</div>';
+            // 保持演示数据，仅在控制台记录
+            console.warn('收益真实数据加载失败，已降级为演示数据:', e.message);
           });
       });
     }
 
     function claimOne(propertyKey) {
-      var token = getToken();
-      if (!token) {
-        alert('请先连接钱包');
+      var E = window.ESTATE;
+      if (!E || !E.user || !E.user()) {
+        if (E && E.openAuth) E.openAuth();
+        else alert('请先登录');
         return;
       }
-      var claimAllBtn = document.getElementById('claim-all');
-      if (claimAllBtn) claimAllBtn.disabled = true;
-
-      // 通过钱包弹窗走标准下单流程（type=claim）
-      if (window.ESTATE && window.ESTATE.submitOrder) {
-        window.ESTATE.submitOrder({
-          type: 'claim',
-          property: propertyKey,
-          amount: 1
+      var item = currentData.dividends.find(function (d) { return d.key === propertyKey; });
+      var total = item ? Math.round((item.pendingEth || 0.05) * 1e18) : 50000;
+      if (E.submitOrder) {
+        E.submitOrder({
+          type: 'claim', property: propertyKey, propertyName: item ? item.name : (propNames[propertyKey] || propertyKey),
+          price: 0, amount: 1, total: total
         }, function () {
-          setTimeout(loadDividends, 800);
-        });
-      } else {
-        // 兜底：直接调 API
-        (window.ESTATE && window.ESTATE.ready || Promise.resolve(null)).then(function (apiBase) {
-          if (!apiBase) { alert('演示模式：后端未启动，无法领取'); return; }
-          fetch(apiBase + '/orders', {
-            method: 'POST',
-            headers: {
-              'Authorization': 'Bearer ' + token,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ type: 'claim', property: propertyKey, amount: 1 })
-          })
-            .then(function (r) { return r.json(); })
-            .then(function (data) {
-              if (data.error) alert(data.error);
-              else alert('领取成功！tx: ' + (data.txHash || '').slice(0, 18) + '…');
-              setTimeout(loadDividends, 800);
-            })
-            .catch(function (e) { alert('领取失败：' + e.message); });
+          setTimeout(loadDividends, 600);
         });
       }
+    }
+
+    function claimAll() {
+      var E = window.ESTATE;
+      if (!E || !E.user || !E.user()) {
+        if (E && E.openAuth) E.openAuth();
+        else alert('请先登录');
+        return;
+      }
+      var list = currentData.dividends.filter(function (d) { return d.shares > 0 && (d.pendingEth || 0) > 0; });
+      if (!list.length) return;
+      for (var i = 0; i < list.length; i++) {
+        (function (item) {
+          setTimeout(function () {
+            E.submitOrder({
+              type: 'claim', property: item.key, propertyName: item.name,
+              price: 0, amount: 1, total: Math.round((item.pendingEth || 0.05) * 1e18)
+            });
+          }, i * 300);
+        })(list[i]);
+      }
+      setTimeout(loadDividends, list.length * 300 + 800);
+    }
+
+    function exportCSV() {
+      var rows = currentData.history;
+      if (!rows.length) { alert('暂无数据可导出'); return; }
+      var csv = '\uFEFF日期,房产,收益类型,金额(ETH),状态\r\n';
+      for (var i = 0; i < rows.length; i++) {
+        var r = rows[i];
+        csv += [r.date, r.property, r.type, r.amount, r.status].join(',') + '\r\n';
+      }
+      var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = 'estate-yield-history.csv';
+      document.body.appendChild(a); a.click();
+      setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 300);
     }
 
     function init() {
@@ -1114,28 +1161,19 @@ input, select, textarea {
       replaceHoldingList();
 
       var claimAllBtn = document.getElementById('claim-all');
-      if (claimAllBtn) {
-        claimAllBtn.addEventListener('click', function () {
-          alert('请逐套领取，或在"个人中心"查看所有分红记录。');
-        });
-      }
+      if (claimAllBtn) claimAllBtn.addEventListener('click', claimAll);
 
       var refreshBtn = document.getElementById('refresh-dividends');
       if (refreshBtn) refreshBtn.addEventListener('click', loadDividends);
 
+      var exportBtn = document.getElementById('export-yield');
+      if (exportBtn) exportBtn.addEventListener('click', exportCSV);
+
       loadDividends();
 
-      // 监听登录状态变化（钱包弹窗登录后刷新）
       window.addEventListener('estate-login', function () {
-        loadDividends();
+        setTimeout(loadDividends, 400);
       });
-      setInterval(function () {
-        var token = getToken();
-        var statusEl = document.getElementById('chain-status');
-        if (token && statusEl && (statusEl.textContent === '未登录' || statusEl.textContent === '加载失败')) {
-          loadDividends();
-        }
-      }, 2000);
     }
 
     if (document.readyState === 'loading') {
