@@ -1126,10 +1126,13 @@ input, select, textarea {
       loadDividends();
 
       // 监听登录状态变化（钱包弹窗登录后刷新）
+      window.addEventListener('estate-login', function () {
+        loadDividends();
+      });
       setInterval(function () {
         var token = getToken();
         var statusEl = document.getElementById('chain-status');
-        if (token && statusEl && statusEl.textContent === '未登录') {
+        if (token && statusEl && (statusEl.textContent === '未登录' || statusEl.textContent === '加载失败')) {
           loadDividends();
         }
       }, 2000);

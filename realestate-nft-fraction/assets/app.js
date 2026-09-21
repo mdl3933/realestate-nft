@@ -292,6 +292,7 @@
         setUser(u); m.remove();
         toast('欢迎，' + u.username + (u.chain ? '（已连接本地区块链）' : '（演示模式）'), 'success');
         refreshWalletBtn();
+        try { window.dispatchEvent(new CustomEvent('estate-login', { detail: u })); } catch (e) {}
       };
       if (API) {
         api('/auth/' + (cur === 'login' ? 'login' : 'register'), { method: 'POST', body: JSON.stringify({ username: name, password: pass }) })
