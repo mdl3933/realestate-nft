@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>收益领取 — ESTATE</title>
+    <title>赎回合并 — ESTATE</title>
     <style id="theme-vars">
 /* EstateNFT Fraction — Premium real-estate luxury design tokens */
 
@@ -707,8 +707,8 @@ input, select, textarea {
         <li><a href="./marketplace.html" data-dom-id="nav-marketplace">在售资产</a></li>
         <li><a href="./split.html" data-dom-id="nav-split">房产拆分</a></li>
         <li><a href="./trade.html" data-dom-id="nav-trade">份额交易</a></li>
-        <li><a href="./yield.html" aria-current="page">收益领取</a></li>
-        <li><a href="./redeem.html" data-dom-id="nav-redeem">赎回合并</a></li>
+        <li><a href="./yield.html" data-dom-id="nav-yield">收益领取</a></li>
+        <li><a href="./redeem.html" aria-current="page">赎回合并</a></li>
         <li><a href="./profile.html" data-dom-id="nav-profile">个人中心</a></li>
       </ul>
       <div class="navbar-actions">
@@ -720,21 +720,21 @@ input, select, textarea {
     </div>
   </nav>
 
-  <header class="page-hero" style="--hero-img:url('../assets/property-apartment.jpg')">
+  <header class="page-hero" style="--hero-img:url('../assets/property-loft.jpg')">
     <div class="ph-bg"></div>
     <div class="ph-grid"></div>
     <div class="ph-glow ph-glow-a"></div>
     <div class="ph-glow ph-glow-b"></div>
     <div class="container ph-inner">
-      <div class="ph-crumb"><a href="./index.html">首页</a><span class="sep">/</span><span>收益领取</span></div>
-      <div class="ph-eyebrow"><span class="ph-dot"></span>Rental Yield · 收益领取</div>
-      <h1 class="ph-title">租金收益 <span class="gold-text">按份自动分配</span></h1>
-      <p class="ph-sub">运营方将租金注入合约，智能合约按持有份额即时结算，一键领取到你的托管钱包。分红规则公开透明，持份即享收益权。</p>
+      <div class="ph-crumb"><a href="./index.html">首页</a><span class="sep">/</span><span>赎回合并</span></div>
+      <div class="ph-eyebrow"><span class="ph-dot"></span>Redemption · 赎回合并</div>
+      <h1 class="ph-title">集齐全部份额，<span class="gold-text">赎回房产</span></h1>
+      <p class="ph-sub">当你收齐一套房产的全部份额，即可合并销毁份额、赎回完整 ERC-721 主 NFT，完成「拆分—流通—赎回」的资产闭环。</p>
       <div class="ph-chips">
-        <a class="ph-chip" href="#yield-summary"><i></i>租金按份自动结算</a>
-        <a class="ph-chip" href="#claim-all"><i></i>一键领取到钱包</a>
-        <a class="ph-chip" href="#yield-history"><i></i>分红记录公开</a>
-        <a class="ph-chip" href="./marketplace.html"><i></i>持份即收益权</a>
+        <a class="ph-chip" href="#redeem-threshold"><i></i>集齐全部份额</a>
+        <a class="ph-chip" href="#redeem-form"><i></i>份额合并销毁</a>
+        <a class="ph-chip" href="#redeem-flow"><i></i>主 NFT 归还</a>
+        <a class="ph-chip" href="#redeem-flow"><i></i>完整资产闭环</a>
       </div>
     </div>
     <div class="ph-ticker" aria-hidden="true"><div class="ph-ticker-track"><b>ERC-721 房产确权</b><i>✦</i><b>ERC-1155 份额流通</b><i>✦</i><b>Chainlink 预言机喂价</b><i>✦</i><b>USDC 稳定币结算</b><i>✦</i><b>DAO 份额治理</b><i>✦</i><b>IPFS 元数据存证</b><i>✦</i><b>可挂接 MetaMask</b><i>✦</i><b>Polygon 链上可查</b><i>✦</i><b>ERC-721 房产确权</b><i>✦</i><b>ERC-1155 份额流通</b><i>✦</i><b>Chainlink 预言机喂价</b><i>✦</i><b>USDC 稳定币结算</b><i>✦</i><b>DAO 份额治理</b><i>✦</i><b>IPFS 元数据存证</b><i>✦</i><b>可挂接 MetaMask</b><i>✦</i><b>Polygon 链上可查</b><i>✦</i></div></div>
@@ -743,51 +743,56 @@ input, select, textarea {
   <main class="page">
     <div class="container">
 
-      <div id="yield-summary" class="yield-summary">
-        <div class="summary-card">
-          <h3>待领取总收益</h3>
-          <div class="amount">¥4,286.00</div>
-        </div>
-        <div class="summary-card">
-          <h3>持有房产数</h3>
-          <div class="amount">0</div>
-        </div>
-        <div class="summary-card">
-          <h3>链上状态</h3>
-          <div class="amount">检测中…</div>
-        </div>
-      </div>
+      <div class="redeem-layout">
+        <form id="redeem-form" class="form-card" onsubmit="event.preventDefault();">
+          <div class="form-group">
+            <label class="form-label" for="redeem-property">选择房产</label>
+            <select class="form-select" id="redeem-property">
+              <option value="">请选择</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="redeem-amount">赎回份额数量</label>
+            <input class="form-input" id="redeem-amount" type="number" min="1" placeholder="例如：1000">
+            <p class="form-hint" id="threshold-hint">选择房产后将显示所需份额阈值。</p>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="redeem-address">接收主 NFT 的钱包地址</label>
+            <input class="form-input" id="redeem-address" type="text" placeholder="0x...">
+          </div>
+          <button class="btn btn-primary" type="submit" style="width:100%; margin-top:var(--estate-s-3);">提交赎回申请</button>
+        </form>
 
-      <div class="yield-actions">
-        <button class="btn btn-primary" id="claim-all" type="button">一键领取全部收益</button>
-      </div>
-
-      <div class="card" style="margin-bottom: var(--estate-s-6);">
-        <div class="card-body">
-          <h2 style="font-size:1.15rem; margin:0 0 var(--estate-s-4);">我的持仓收益</h2>
-          <div id="dividend-list"><div class="empty-state">加载中…</div></div>
-        </div>
-      </div>
-
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: var(--estate-s-4);">
-        <h2 id="yield-history" class="section-title" style="font-size:1.25rem; margin:0;">租金分配历史</h2>
-        <button class="btn btn-sm btn-outline" id="export-yield" type="button">导出 CSV</button>
-      </div>
-      <div class="table-wrap">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>日期</th>
-              <th>房产</th>
-              <th>收益类型</th>
-              <th>金额</th>
-              <th>状态</th>
-            </tr>
-          </thead>
-          <tbody id="yield-history-body">
-            <tr><td colspan="5" class="empty-state" style="padding:40px;">加载中…</td></tr>
-          </tbody>
-        </table>
+        <aside>
+          <div id="redeem-threshold" class="threshold-card">
+            <h3>我的赎回进度</h3>
+            <p style="color:var(--estate-muted-foreground);font-size:0.9rem;margin:0;">加载中…</p>
+          </div>
+          <div id="redeem-flow" class="form-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--estate-s-4);">
+              <h3 style="font-size:1.1rem; margin:0; color:var(--estate-neutral-900);">赎回流程</h3>
+              <button class="btn btn-sm btn-outline" id="export-redeem" type="button">导出 CSV</button>
+            </div>
+            <ol class="progress-list">
+              <li data-step="1">
+                <h4>提交申请</h4>
+                <p>确认持有足额份额并填写接收地址。</p>
+              </li>
+              <li data-step="2">
+                <h4>份额锁定</h4>
+                <p>合约将锁定您指定数量的份额代币。</p>
+              </li>
+              <li data-step="3">
+                <h4>合规审核</h4>
+                <p>平台与托管方完成法律与 KYC 审核。</p>
+              </li>
+              <li data-step="4">
+                <h4>主 NFT 转移</h4>
+                <p>审核通过后，主 NFT 将转移至您的钱包。</p>
+              </li>
+            </ol>
+          </div>
+        </aside>
       </div>
     </div>
   </main>
@@ -798,8 +803,8 @@ input, select, textarea {
         <li><a href="./marketplace.html">在售资产</a></li>
         <li><a href="./split.html">房产拆分</a></li>
         <li><a href="./trade.html">份额交易</a></li>
-        <li><a href="./yield.html" data-dom-id="nav-yield">收益领取</a></li>
-        <li><a href="./redeem.html">赎回合并</a></li>
+        <li><a href="./yield.html">收益领取</a></li>
+        <li><a href="./redeem.html" data-dom-id="nav-redeem">赎回合并</a></li>
       </ul>
       <p class="copyright">© 2026 ESTATE. 碎片化不动产 NFT 权益交易平台. All rights reserved.</p>
     </div>
@@ -813,44 +818,58 @@ input, select, textarea {
         const open = navLinks.classList.toggle('is-open');
         menuToggle.setAttribute('aria-expanded', String(open));
       });
+
+      const select = document.getElementById('redeem-property');
+      const hint = document.getElementById('threshold-hint');
+      select.addEventListener('change', () => {
+        const opt = select.options[select.selectedIndex];
+        if (opt && opt.dataset.threshold) {
+          hint.textContent = `该房产赎回阈值：${Number(opt.dataset.threshold).toLocaleString('zh-CN')} 份。`;
+        } else {
+          hint.textContent = '选择房产后将显示所需份额阈值。';
+        }
+      });
     })();
   </script>
 
     <style>
-    .yield-summary { display: flex; flex-wrap: wrap; gap: var(--estate-s-5); margin-bottom: var(--estate-s-6); }
-    .summary-card { flex: 1; min-width: 220px; background-color: var(--estate-card); border: 1px solid var(--estate-border); border-radius: var(--estate-radius-large); padding: var(--estate-s-5); box-shadow: var(--estate-shadow-1); }
-    .summary-card h3 { font-size: 0.9rem; color: var(--estate-muted-foreground); margin: 0 0 var(--estate-s-2); font-weight: 500; }
-    .summary-card .amount { font-size: 2rem; font-weight: 700; color: var(--estate-primary-700); }
-    .yield-actions { display: flex; justify-content: flex-end; margin-bottom: var(--estate-s-4); }
-    .holding-row { display: flex; align-items: center; justify-content: space-between; gap: var(--estate-s-4); padding: var(--estate-s-4); border-bottom: 1px solid var(--estate-border); }
-    .holding-row:last-child { border-bottom: none; }
-    .holding-info { display: flex; align-items: center; gap: var(--estate-s-4); }
-    .holding-info img { width: 56px; height: 56px; object-fit: cover; border-radius: var(--estate-radius-medium); background-color: var(--estate-neutral-200); }
-    .holding-info .name { font-weight: 600; color: var(--estate-neutral-900); }
-    .holding-info .shares { font-size: 0.85rem; color: var(--estate-muted-foreground); }
-    .claim-amount { font-weight: 700; color: var(--estate-state-success); }
+    .redeem-layout { display: grid; grid-template-columns: 1fr 1fr; gap: var(--estate-s-6); align-items: start; }
+    .form-card { background-color: var(--estate-card); border: 1px solid var(--estate-border); border-radius: var(--estate-radius-large); box-shadow: var(--estate-shadow-1); padding: var(--estate-s-6); }
+    .progress-list { list-style: none; margin: 0; padding: 0; }
+    .progress-list li { position: relative; padding-left: var(--estate-s-7); padding-bottom: var(--estate-s-5); border-left: 2px solid var(--estate-border); }
+    .progress-list li:last-child { border-left-color: transparent; padding-bottom: 0; }
+    .progress-list li::before {
+      content: attr(data-step);
+      position: absolute;
+      left: -14px;
+      top: 0;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background-color: var(--estate-primary-100);
+      color: var(--estate-primary-700);
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .progress-list h4 { margin: 0 0 var(--estate-s-1); font-size: 1rem; color: var(--estate-neutral-900); }
+    .progress-list p { margin: 0; font-size: 0.9rem; color: var(--estate-muted-foreground); }
+    .threshold-card { background-color: var(--estate-primary-50); border: 1px solid var(--estate-primary-200); border-radius: var(--estate-radius-large); padding: var(--estate-s-5); margin-bottom: var(--estate-s-5); }
+    .threshold-card h3 { margin: 0 0 var(--estate-s-3); font-size: 1.1rem; color: var(--estate-primary-800); }
+    .threshold-row { display: flex; justify-content: space-between; padding: var(--estate-s-2) 0; border-bottom: 1px solid var(--estate-primary-100); }
+    .threshold-row:last-child { border-bottom: none; }
+    @media (max-width: 768px) { .redeem-layout { grid-template-columns: 1fr; } }
   </style>
   <script src="../assets/app.js"></script>
   <script src="../assets/wallet-popup.js"></script>
 
   <script>
   // ============================================================
-  // 收益领取页 — 支持本地后端真实数据 + 演示模式本地数据
+  // 赎回合并页 — 支持本地后端真实数据 + 演示模式本地数据
   // ============================================================
   (function () {
-    var propImgs = {
-      villa: '../assets/property-villa.jpg',
-      loft: '../assets/property-loft.jpg',
-      office: '../assets/property-office.jpg',
-      apartment: '../assets/property-apartment.jpg',
-      tower: '../assets/property-tower.jpg',
-      cozy: '../assets/property-cozy.jpg',
-      shop: '../assets/property-shop.jpg',
-      family: '../assets/property-family.jpg',
-      studio: '../assets/property-studio.jpg',
-      townhouse: '../assets/property-townhouse.jpg'
-    };
-
     var propNames = {
       villa: '虹桥轻奢别墅', loft: '静安 Loft 公寓', office: '陆家嘴甲级写字楼',
       apartment: '徐汇精装公寓', tower: '临港刚需高层', cozy: '花桥温馨小两居',
@@ -858,30 +877,16 @@ input, select, textarea {
       townhouse: '嘉兴花园洋房'
     };
 
-    // 演示数据：默认展示的收益数据
-    var DEMO_DIVIDENDS = [
-      { key: 'villa', name: '虹桥轻奢别墅', shares: 50, pendingEth: 0.245, pendingWei: '245000000000000000', totalShares: 1000 },
-      { key: 'loft', name: '静安 Loft 公寓', shares: 120, pendingEth: 0.1008, pendingWei: '100800000000000000', totalShares: 1000 },
-      { key: 'apartment', name: '徐汇精装公寓', shares: 30, pendingEth: 0.0828, pendingWei: '82800000000000000', totalShares: 1000 }
+    var DEMO_REDEEM = [
+      { key: 'villa', name: '虹桥轻奢别墅', shares: 1000, totalShares: 1000 },
+      { key: 'loft', name: '静安 Loft 公寓', shares: 800, totalShares: 1000 },
+      { key: 'apartment', name: '徐汇精装公寓', shares: 350, totalShares: 1000 },
+      { key: 'office', name: '陆家嘴甲级写字楼', shares: 12000, totalShares: 20000 }
     ];
 
-    var DEMO_HISTORY = [
-      { date: '2026-08-01', property: '虹桥轻奢别墅', type: '月度租金', amount: 0.245, status: '待领取' },
-      { date: '2026-08-01', property: '静安 Loft 公寓', type: '月度租金', amount: 0.1008, status: '待领取' },
-      { date: '2026-08-01', property: '徐汇精装公寓', type: '月度租金', amount: 0.0828, status: '待领取' },
-      { date: '2026-07-01', property: '虹桥轻奢别墅', type: '月度租金', amount: 0.22, status: '已领取' },
-      { date: '2026-07-01', property: '陆家嘴甲级写字楼', type: '季度租金', amount: 0.36, status: '已领取' }
-    ];
-
-    var currentData = { dividends: [], history: [], mode: 'demo' };
+    var currentData = [];
 
     function LS(k, d) { try { var v = localStorage.getItem('estate_' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
-
-    function fmtEth(wei) {
-      var n = Number(wei || 0);
-      if (String(wei).length > 10 && String(wei).indexOf('e') === -1) n = Number(wei) / 1e18;
-      return n.toFixed(6);
-    }
 
     function getLocalHoldings() {
       var h = LS('holdings', {});
@@ -894,195 +899,143 @@ input, select, textarea {
       return list;
     }
 
-    function getLocalClaims() {
-      return LS('claims', []);
-    }
-
     function mergeDemoWithLocal() {
-      var localHoldings = getLocalHoldings();
+      var local = getLocalHoldings();
       var map = {};
-      // 先放演示数据
-      for (var i = 0; i < DEMO_DIVIDENDS.length; i++) { map[DEMO_DIVIDENDS[i].key] = Object.assign({}, DEMO_DIVIDENDS[i]); }
-      // 用本地持仓覆盖/补充
-      for (var j = 0; j < localHoldings.length; j++) {
-        var lh = localHoldings[j];
-        if (map[lh.key]) {
-          map[lh.key].shares = lh.shares;
-          map[lh.key].pendingEth = (lh.shares / 1000) * 4.9;
-          map[lh.key].pendingWei = String(Math.round(map[lh.key].pendingEth * 1e18));
-        } else {
-          map[lh.key] = {
-            key: lh.key, name: lh.name, shares: lh.shares, totalShares: 1000,
-            pendingEth: (lh.shares / 1000) * 4.9,
-            pendingWei: String(Math.round((lh.shares / 1000) * 4.9 * 1e18))
-          };
-        }
+      for (var i = 0; i < DEMO_REDEEM.length; i++) { map[DEMO_REDEEM[i].key] = Object.assign({}, DEMO_REDEEM[i]); }
+      for (var j = 0; j < local.length; j++) {
+        var lh = local[j];
+        if (map[lh.key]) { map[lh.key].shares = lh.shares; }
+        else { map[lh.key] = { key: lh.key, name: lh.name, shares: lh.shares, totalShares: 1000 }; }
       }
       var list = [];
       for (var k in map) list.push(map[k]);
       return list;
     }
 
-    function replaceSummary() {
-      var summary = document.getElementById('yield-summary');
-      if (!summary) return;
-      summary.innerHTML =
-        '<div class="summary-card">' +
-          '<h3>待领取总收益（ETH）</h3>' +
-          '<div class="amount" id="total-pending">0.000000</div>' +
-        '</div>' +
-        '<div class="summary-card">' +
-          '<h3>持有房产数</h3>' +
-          '<div class="amount" id="hold-count">0</div>' +
-        '</div>' +
-        '<div class="summary-card">' +
-          '<h3>链上状态</h3>' +
-          '<div class="amount" id="chain-status" style="font-size:1.1rem;">检测中…</div>' +
-        '</div>';
+    function populateForm(list) {
+      var select = document.getElementById('redeem-property');
+      var amount = document.getElementById('redeem-amount');
+      var hint = document.getElementById('threshold-hint');
+      if (!select) return;
+      currentData = list || [];
+      select.innerHTML = '<option value="">请选择</option>';
+      for (var i = 0; i < currentData.length; i++) {
+        var p = currentData[i];
+        var opt = document.createElement('option');
+        opt.value = p.key;
+        opt.textContent = p.name;
+        opt.setAttribute('data-threshold', p.totalShares || 1000);
+        opt.setAttribute('data-shares', p.shares || 0);
+        opt.setAttribute('data-name', p.name);
+        select.appendChild(opt);
+      }
+      function updateHint() {
+        var opt = select.options[select.selectedIndex];
+        if (!opt || !opt.value) {
+          if (hint) hint.textContent = '选择房产后将显示所需份额阈值。';
+          if (amount) amount.value = '';
+          return;
+        }
+        var total = Number(opt.getAttribute('data-threshold') || 1000);
+        var shares = Number(opt.getAttribute('data-shares') || 0);
+        if (hint) {
+          hint.innerHTML = '该房产赎回阈值：<strong>' + total.toLocaleString('zh-CN') + '</strong> 份。您当前持有 <strong>' + shares + '</strong> 份。';
+        }
+        if (amount) amount.value = total;
+      }
+      select.removeEventListener('change', updateHint);
+      select.addEventListener('change', updateHint);
+      updateHint();
     }
 
-    function replaceHoldingList() {
-      var cards = document.querySelectorAll('.card');
-      var targetCard = null;
-      for (var i = 0; i < cards.length; i++) {
-        var h2 = cards[i].querySelector('h2');
-        if (h2 && h2.textContent.indexOf('我的持仓收益') >= 0) {
-          targetCard = cards[i];
-          break;
+    function replaceThreshold(list) {
+      var card = document.getElementById('redeem-threshold');
+      if (!card) return;
+      var html = '<h3>我的赎回进度</h3>';
+      var hasAny = false;
+      for (var i = 0; i < list.length; i++) {
+        var p = list[i];
+        if (p.shares <= 0) continue;
+        hasAny = true;
+        var total = p.totalShares || 1000;
+        var pct = Math.min(100, Math.round(p.shares / total * 100));
+        var canRedeem = p.shares >= total;
+        html += '<div class="threshold-row" style="margin-bottom:8px;">' +
+          '<span style="font-weight:500;">' + p.name + '</span>' +
+          '<span>' + p.shares + ' / ' + total + ' 份</span>' +
+        '</div>';
+        html += '<div style="height:6px;background:var(--estate-neutral-200);border-radius:999px;margin-bottom:16px;overflow:hidden;">' +
+          '<div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,var(--estate-primary-400),var(--estate-primary-600));border-radius:999px;"></div>' +
+        '</div>';
+        if (canRedeem) {
+          html += '<button class="btn btn-sm btn-primary redeem-btn" data-key="' + p.key + '" data-name="' + p.name + '" data-total="' + total + '" style="width:100%;margin-bottom:16px;">立即赎回 ' + p.name + '</button>';
         }
       }
-      if (!targetCard) return;
-      var body = targetCard.querySelector('.card-body');
-      body.innerHTML =
-        '<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: var(--estate-s-4);">' +
-          '<h2 style="font-size:1.15rem; margin:0;">我的持仓收益</h2>' +
-          '<button class="btn btn-sm btn-ghost" id="refresh-dividends" type="button">刷新</button>' +
-        '</div>' +
-        '<div id="dividend-list"><div class="empty-state">加载中…</div></div>';
-    }
-
-    function renderHistory(list) {
-      var tbody = document.getElementById('yield-history-body');
-      if (!tbody) return;
-      if (!list || !list.length) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-state" style="padding:40px;">暂无分红记录</td></tr>';
-        return;
+      if (!hasAny) {
+        html += '<p style="color:var(--estate-muted-foreground);font-size:0.9rem;margin:0;">暂无持仓，去 <a href="./marketplace.html">市场认购</a> 买入份额吧～</p>';
       }
-      var html = '';
-      for (var i = 0; i < list.length; i++) {
-        var h = list[i];
-        var statusClass = h.status === '已领取' ? 'badge-success' : 'badge-warning';
-        html += '<tr>' +
-          '<td>' + h.date + '</td>' +
-          '<td>' + h.property + '</td>' +
-          '<td>' + h.type + '</td>' +
-          '<td class="tabular">+ ' + Number(h.amount).toFixed(6) + ' ETH</td>' +
-          '<td><span class="badge ' + statusClass + '">' + h.status + '</span></td>' +
-        '</tr>';
-      }
-      tbody.innerHTML = html;
-    }
+      card.innerHTML = html;
 
-    function render(list, history, mode) {
-      currentData.dividends = list || [];
-      currentData.history = history || [];
-      currentData.mode = mode || 'demo';
-
-      var holdings = list.filter(function (d) { return d.shares > 0; });
-      var totalWei = 0;
-      for (var i = 0; i < list.length; i++) {
-        totalWei += Number(list[i].pendingEth || 0);
-      }
-      var totalEl = document.getElementById('total-pending');
-      if (totalEl) totalEl.textContent = totalWei.toFixed(6);
-      var holdEl = document.getElementById('hold-count');
-      if (holdEl) holdEl.textContent = holdings.length;
-
-      var statusEl = document.getElementById('chain-status');
-      if (statusEl) {
-        if (mode === 'chain') { statusEl.textContent = '链上已连接'; statusEl.style.color = 'var(--state-success)'; }
-        else { statusEl.textContent = '演示模式'; statusEl.style.color = 'var(--state-warning)'; }
-      }
-
-      var listEl = document.getElementById('dividend-list');
-      if (!listEl) return;
-
-      if (holdings.length === 0) {
-        listEl.innerHTML = '<div class="empty-state">暂无持仓，去 <a href="./marketplace.html">市场认购</a> 买几份试试～</div>';
-        var claimAllBtn = document.getElementById('claim-all');
-        if (claimAllBtn) claimAllBtn.disabled = true;
-        renderHistory(history);
-        return;
-      }
-
-      var html = '';
-      for (var j = 0; j < holdings.length; j++) {
-        var h = holdings[j];
-        var img = propImgs[h.key] || '../assets/property-apartment.jpg';
-        var pending = Number(h.pendingEth || 0);
-        var canClaim = pending > 0;
-        html += '<div class="holding-row" data-key="' + h.key + '">' +
-          '<div class="holding-info">' +
-            '<img src="' + img + '" alt="' + h.name + '">' +
-            '<div>' +
-              '<div class="name">' + h.name + '</div>' +
-              '<div class="shares">持有 ' + h.shares + ' 份</div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="claim-amount">+ ' + pending.toFixed(6) + ' ETH</div>' +
-          '<button class="btn btn-sm ' + (canClaim ? 'btn-outline' : 'btn-ghost') + ' claim-one" type="button" data-key="' + h.key + '" ' + (canClaim ? '' : 'disabled') + '>' +
-            (canClaim ? '领取' : '暂无分红') +
-          '</button>' +
-        '</div>';
-      }
-      listEl.innerHTML = html;
-
-      var btns = listEl.querySelectorAll('.claim-one');
-      for (var k = 0; k < btns.length; k++) {
-        btns[k].addEventListener('click', function (e) {
+      var btns = card.querySelectorAll('.redeem-btn');
+      for (var j = 0; j < btns.length; j++) {
+        btns[j].addEventListener('click', function (e) {
           var key = e.currentTarget.getAttribute('data-key');
-          claimOne(key);
+          var name = e.currentTarget.getAttribute('data-name');
+          var total = Number(e.currentTarget.getAttribute('data-total') || 1000);
+          doRedeem(key, name, total);
         });
       }
-      var claimAllBtn = document.getElementById('claim-all');
-      if (claimAllBtn) claimAllBtn.disabled = totalWei <= 0;
-
-      renderHistory(history);
     }
 
-    function buildHistoryFromClaims() {
-      var claims = getLocalClaims();
-      var hist = [];
-      for (var i = 0; i < claims.length; i++) {
-        var c = claims[i];
-        var d = new Date(c.time || c.createdAt || Date.now());
-        hist.push({
-          date: d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'),
-          property: c.propertyName || propNames[c.property] || c.property,
-          type: '月度租金',
-          amount: Number(c.amount || 0) / 1e18 || 0.05,
-          status: '已领取'
+    function doRedeem(key, name, amount) {
+      var E = window.ESTATE;
+      if (!E || !E.user || !E.user()) {
+        if (E && E.openAuth) E.openAuth();
+        else alert('请先登录');
+        return;
+      }
+      if (E.submitOrder) {
+        E.submitOrder({
+          type: 'redeem', property: key, propertyName: name,
+          price: 0, amount: amount, total: 0
+        }, function () {
+          setTimeout(loadRedeemData, 600);
         });
       }
-      return hist;
     }
 
-    function loadDividends() {
-      var listEl = document.getElementById('dividend-list');
-      var statusEl = document.getElementById('chain-status');
-      if (statusEl) { statusEl.textContent = '加载中…'; statusEl.style.color = ''; }
+    function bindFormSubmit() {
+      var form = document.getElementById('redeem-form');
+      if (!form || form.getAttribute('data-bound')) return;
+      form.setAttribute('data-bound', '1');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var select = document.getElementById('redeem-property');
+        var opt = select.options[select.selectedIndex];
+        if (!opt || !opt.value) { alert('请选择要赎回的房产'); return; }
+        var key = opt.value;
+        var name = opt.getAttribute('data-name');
+        var total = Number(opt.getAttribute('data-threshold') || 1000);
+        var shares = Number(opt.getAttribute('data-shares') || 0);
+        if (shares < total) { alert('持仓不足，无法赎回（需要 ' + total + ' 份，当前 ' + shares + ' 份）'); return; }
+        doRedeem(key, name, total);
+      });
+    }
 
-      // 1. 先渲染演示数据，保证页面不空白
+    function loadRedeemData() {
+      // 1. 先用演示/本地数据渲染，避免空白
       var demoList = mergeDemoWithLocal();
-      var demoHistory = DEMO_HISTORY.concat(buildHistoryFromClaims());
-      render(demoList, demoHistory, 'demo');
+      populateForm(demoList);
+      replaceThreshold(demoList);
+      bindFormSubmit();
 
       // 2. 尝试获取真实数据
       (window.ESTATE && window.ESTATE.ready || Promise.resolve(null)).then(function (apiBase) {
-        if (!apiBase) return; // 无后端，保持演示数据
+        if (!apiBase) return;
         var token = null;
         try { token = localStorage.getItem('estate_token'); } catch (e) {}
-        if (!token) return; // 未登录，保持演示数据
+        if (!token) return;
 
         fetch(apiBase + '/dividends', {
           headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
@@ -1090,89 +1043,47 @@ input, select, textarea {
           .then(function (r) { return r.json(); })
           .then(function (data) {
             if (data.error) throw new Error(data.error);
-            render(data.dividends || [], data.history || DEMO_HISTORY, data.mode || 'chain');
+            populateForm(data.dividends || []);
+            replaceThreshold(data.dividends || []);
+            bindFormSubmit();
           })
           .catch(function (e) {
-            // 保持演示数据，仅在控制台记录
-            console.warn('收益真实数据加载失败，已降级为演示数据:', e.message);
+            console.warn('赎回页真实数据加载失败，已降级为演示数据:', e.message);
           });
       });
     }
 
-    function claimOne(propertyKey) {
-      var E = window.ESTATE;
-      if (!E || !E.user || !E.user()) {
-        if (E && E.openAuth) E.openAuth();
-        else alert('请先登录');
-        return;
-      }
-      var item = currentData.dividends.find(function (d) { return d.key === propertyKey; });
-      var total = item ? Math.round((item.pendingEth || 0.05) * 1e18) : 50000;
-      if (E.submitOrder) {
-        E.submitOrder({
-          type: 'claim', property: propertyKey, propertyName: item ? item.name : (propNames[propertyKey] || propertyKey),
-          price: 0, amount: 1, total: total
-        }, function () {
-          setTimeout(loadDividends, 600);
-        });
-      }
+    function csvCell(v) {
+      var s = (v === null || v === undefined) ? '' : String(v);
+      return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
     }
-
-    function claimAll() {
-      var E = window.ESTATE;
-      if (!E || !E.user || !E.user()) {
-        if (E && E.openAuth) E.openAuth();
-        else alert('请先登录');
-        return;
-      }
-      var list = currentData.dividends.filter(function (d) { return d.shares > 0 && (d.pendingEth || 0) > 0; });
-      if (!list.length) return;
-      for (var i = 0; i < list.length; i++) {
-        (function (item) {
-          setTimeout(function () {
-            E.submitOrder({
-              type: 'claim', property: item.key, propertyName: item.name,
-              price: 0, amount: 1, total: Math.round((item.pendingEth || 0.05) * 1e18)
-            });
-          }, i * 300);
-        })(list[i]);
-      }
-      setTimeout(loadDividends, list.length * 300 + 800);
-    }
-
     function exportCSV() {
-      var rows = currentData.history;
-      if (!rows.length) { alert('暂无数据可导出'); return; }
-      var csv = '\uFEFF日期,房产,收益类型,金额(ETH),状态\r\n';
-      for (var i = 0; i < rows.length; i++) {
-        var r = rows[i];
-        csv += [r.date, r.property, r.type, r.amount, r.status].join(',') + '\r\n';
+      var list = currentData.dividends || [];
+      if (!list.length) { alert('暂无数据可导出'); return; }
+      var now = new Date();
+      var head = ['导出时间', '房产', '当前持有', '赎回阈值', '进度'];
+      var lines = [head];
+      for (var i = 0; i < list.length; i++) {
+        var r = list[i];
+        var pct = Math.min(100, Math.round((r.shares || 0) / (r.totalShares || 1000) * 100));
+        lines.push([now.toLocaleString('zh-CN', { hour12: false }), r.name, r.shares || 0, r.totalShares || 1000, pct + '%']);
       }
+      var csv = '\uFEFF' + lines.map(function (r) { return r.map(csvCell).join(','); }).join('\r\n');
       var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
-      a.href = url; a.download = 'estate-yield-history.csv';
+      a.href = url;
+      a.download = 'estate-redeem-progress-' + now.toISOString().slice(0,10) + '.csv';
       document.body.appendChild(a); a.click();
       setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 300);
     }
 
     function init() {
-      replaceSummary();
-      replaceHoldingList();
-
-      var claimAllBtn = document.getElementById('claim-all');
-      if (claimAllBtn) claimAllBtn.addEventListener('click', claimAll);
-
-      var refreshBtn = document.getElementById('refresh-dividends');
-      if (refreshBtn) refreshBtn.addEventListener('click', loadDividends);
-
-      var exportBtn = document.getElementById('export-yield');
+      loadRedeemData();
+      var exportBtn = document.getElementById('export-redeem');
       if (exportBtn) exportBtn.addEventListener('click', exportCSV);
-
-      loadDividends();
-
       window.addEventListener('estate-login', function () {
-        setTimeout(loadDividends, 400);
+        setTimeout(loadRedeemData, 400);
       });
     }
 
@@ -1182,5 +1093,6 @@ input, select, textarea {
       init();
     }
   })();
-  </script></body>
+  </script>
+</body>
 </html>
