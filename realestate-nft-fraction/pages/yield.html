@@ -1140,18 +1140,29 @@ input, select, textarea {
       setTimeout(loadDividends, list.length * 300 + 800);
     }
 
+    function csvCell(v) {
+      var s = (v === null || v === undefined) ? '' : String(v);
+      return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    }
     function exportCSV() {
       var rows = currentData.history;
       if (!rows.length) { alert('暂无数据可导出'); return; }
-      var csv = '\uFEFF日期,房产,收益类型,金额(ETH),状态\r\n';
+      var now = new Date();
+      var head = ['日期时间', '房产', '收益类型', '金额(ETH)', '状态'];
+      var lines = [head];
       for (var i = 0; i < rows.length; i++) {
         var r = rows[i];
-        csv += [r.date, r.property, r.type, r.amount, r.status].join(',') + '\r\n';
+        // 如果有原始时间戳，优先用精确时间；否则用日期
+        var t = r.time || r.createdAt || r.date;
+        var dt = t ? new Date(t).toLocaleString('zh-CN', { hour12: false }) : r.date;
+        lines.push([dt, r.property, r.type, r.amount, r.status]);
       }
+      var csv = '\uFEFF' + lines.map(function (r) { return r.map(csvCell).join(','); }).join('\r\n');
       var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
-      a.href = url; a.download = 'estate-yield-history.csv';
+      a.href = url;
+      a.download = 'estate-yield-history-' + now.toISOString().slice(0,10) + '.csv';
       document.body.appendChild(a); a.click();
       setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 300);
     }
