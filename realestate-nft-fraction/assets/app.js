@@ -206,16 +206,17 @@
   }
   function exportOrders() {
     var u = user();
+    var fname = 'estate-orders-' + new Date().toISOString().slice(0,10) + '.csv';
     function localFallback() {
       var list = getOrders().filter(function (o) { return !u || o.owner === u.username; });
       if (!list.length) { toast('暂无订单可导出', 'error'); return; }
-      downloadCsv(ordersToCsv(list), 'estate-orders.csv');
+      downloadCsv(ordersToCsv(list), fname);
       toast('订单 CSV 已导出（浏览器本地记录）', 'success');
     }
     if (API && u && getToken()) {
       fetch(API + '/orders/export', { headers: { Authorization: 'Bearer ' + getToken() } })
         .then(function (r) { if (!r.ok) throw new Error('x'); return r.text(); })
-        .then(function (txt) { downloadCsv(txt, 'estate-orders.csv'); toast('订单 CSV 已导出（含链上记录）', 'success'); })
+        .then(function (txt) { downloadCsv(txt, fname); toast('订单 CSV 已导出（含链上记录）', 'success'); })
         .catch(localFallback);
     } else { localFallback(); }
   }
