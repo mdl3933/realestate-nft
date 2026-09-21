@@ -1058,7 +1058,7 @@ input, select, textarea {
       return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
     }
     function exportCSV() {
-      var list = currentData.dividends || [];
+      var list = currentData || [];
       if (!list.length) { alert('暂无数据可导出'); return; }
       var now = new Date();
       var head = ['导出时间', '房产', '当前持有', '赎回阈值', '进度'];
